@@ -1,3 +1,5 @@
+import dev.ogkush32.kushproxy.ProxyServer
+
 fun main() {
     val bindHost = "0.0.0.0"
     val bindPort = 25566
@@ -5,6 +7,5 @@ fun main() {
     val remotePort = 25565
 
     val server = ProxyServer(bindHost, bindPort, remoteHost, remotePort)
-
     server.start()
 }
