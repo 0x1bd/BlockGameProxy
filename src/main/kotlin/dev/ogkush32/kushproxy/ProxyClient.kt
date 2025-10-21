@@ -55,9 +55,6 @@ class ProxyClient(private val remoteHost: String, private val remotePort: Int) {
             HandshakeIntent.STATUS -> ProtocolState.STATUS
         }
 
-        session.switchInboundState { session.packetProtocol.inboundState = ProtocolState.HANDSHAKE }
-        session.switchOutboundState { session.packetProtocol.outboundState = ProtocolState.HANDSHAKE }
-
         session.send(packet)
 
         session.switchInboundState { session.packetProtocol.inboundState = newState }
