@@ -8,6 +8,10 @@ import org.geysermc.mcprotocollib.protocol.MinecraftProtocol
 import org.geysermc.mcprotocollib.protocol.data.ProtocolState
 import org.geysermc.mcprotocollib.protocol.data.handshake.HandshakeIntent
 import org.geysermc.mcprotocollib.protocol.packet.handshake.serverbound.ClientIntentionPacket
+import org.geysermc.mcprotocollib.protocol.packet.login.clientbound.ClientboundLoginCompressionPacket
+import org.geysermc.mcprotocollib.protocol.packet.login.clientbound.ClientboundLoginFinishedPacket
+import org.geysermc.mcprotocollib.network.compression.CompressionConfig
+import org.geysermc.mcprotocollib.network.compression.ZlibCompression
 import java.net.InetSocketAddress
 
 class ProxyServer(
@@ -38,7 +42,27 @@ class ProxyServer(
 
                 client.onPacketReceived = { packet ->
                     println("Server → Proxy → Player: ${packet.javaClass.simpleName}")
-                    playerSession.send(packet)
+
+                    when (packet) {
+                        is ClientboundLoginCompressionPacket -> {
+                            playerSession.send(packet)
+
+                            val threshold = packet.threshold
+                            if (threshold >= 0) {
+                                playerSession.setCompression(CompressionConfig(threshold, ZlibCompression(), true))
+                            }
+                        }
+
+                        is ClientboundLoginFinishedPacket -> {
+                            playerSession.send(packet)
+                            playerSession.switchInboundState { playerSession.packetProtocol.inboundState = ProtocolState.CONFIGURATION }
+                            playerSession.switchOutboundState { playerSession.packetProtocol.outboundState = ProtocolState.CONFIGURATION }
+                        }
+
+                        else -> {
+                            playerSession.send(packet)
+                        }
+                    }
                 }
 
                 playerSession.addListener(object : SessionAdapter() {

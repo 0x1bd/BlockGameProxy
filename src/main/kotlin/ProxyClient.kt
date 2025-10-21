@@ -7,6 +7,12 @@ import org.geysermc.mcprotocollib.protocol.MinecraftProtocol
 import org.geysermc.mcprotocollib.protocol.data.ProtocolState
 import org.geysermc.mcprotocollib.protocol.data.handshake.HandshakeIntent
 import org.geysermc.mcprotocollib.protocol.packet.handshake.serverbound.ClientIntentionPacket
+import org.geysermc.mcprotocollib.protocol.packet.login.clientbound.ClientboundLoginCompressionPacket
+import org.geysermc.mcprotocollib.protocol.packet.login.clientbound.ClientboundLoginFinishedPacket
+import org.geysermc.mcprotocollib.protocol.packet.configuration.clientbound.ClientboundFinishConfigurationPacket
+import org.geysermc.mcprotocollib.network.compression.CompressionConfig
+import org.geysermc.mcprotocollib.network.compression.ZlibCompression
+import org.geysermc.mcprotocollib.protocol.packet.configuration.clientbound.ClientboundSelectKnownPacks
 import java.net.InetSocketAddress
 
 class ProxyClient(private val remoteHost: String, private val remotePort: Int) {
@@ -37,7 +43,30 @@ class ProxyClient(private val remoteHost: String, private val remotePort: Int) {
 
             override fun packetReceived(session: Session, packet: Packet) {
                 println("ProxyClient received from server: ${packet.javaClass.simpleName}")
-                onPacketReceived?.invoke(packet)
+
+                when (packet) {
+                    is ClientboundLoginCompressionPacket -> {
+                        onPacketReceived?.invoke(packet)
+
+                        val threshold = packet.threshold
+                        if (threshold >= 0) {
+                            session.setCompression(CompressionConfig(threshold, ZlibCompression(), false))
+                        }
+                    }
+
+                    is ClientboundLoginFinishedPacket -> {
+                        onPacketReceived?.invoke(packet)
+
+                        session.switchInboundState { session.packetProtocol.inboundState = ProtocolState.CONFIGURATION }
+                        session.switchOutboundState { session.packetProtocol.outboundState = ProtocolState.CONFIGURATION }
+
+                        nextState = ProtocolState.CONFIGURATION
+                    }
+
+                    else -> {
+                        onPacketReceived?.invoke(packet)
+                    }
+                }
             }
 
             override fun packetSending(event: PacketSendingEvent) {
