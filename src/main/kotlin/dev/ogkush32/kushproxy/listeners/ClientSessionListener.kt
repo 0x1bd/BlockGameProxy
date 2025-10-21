@@ -1,14 +1,15 @@
 package dev.ogkush32.kushproxy.listeners
 
 import dev.ogkush32.kushproxy.ProxyClient
+import dev.ogkush32.kushproxy.switchState
 import org.geysermc.mcprotocollib.network.Session
 import org.geysermc.mcprotocollib.network.event.session.*
 import org.geysermc.mcprotocollib.network.packet.Packet
 import org.geysermc.mcprotocollib.protocol.data.ProtocolState
 import org.geysermc.mcprotocollib.protocol.packet.login.clientbound.ClientboundLoginCompressionPacket
-import org.geysermc.mcprotocollib.protocol.packet.login.clientbound.ClientboundLoginFinishedPacket
 import org.geysermc.mcprotocollib.network.compression.CompressionConfig
 import org.geysermc.mcprotocollib.network.compression.ZlibCompression
+import org.geysermc.mcprotocollib.protocol.packet.login.serverbound.ServerboundLoginAcknowledgedPacket
 
 class ClientSessionListener(private val client: ProxyClient) : SessionAdapter() {
 
@@ -28,20 +29,10 @@ class ClientSessionListener(private val client: ProxyClient) : SessionAdapter() 
         when (packet) {
             is ClientboundLoginCompressionPacket -> {
                 client.onPacketReceived?.invoke(packet)
-
                 val threshold = packet.threshold
                 if (threshold >= 0) {
                     session.setCompression(CompressionConfig(threshold, ZlibCompression(), false))
                 }
-            }
-
-            is ClientboundLoginFinishedPacket -> {
-                client.onPacketReceived?.invoke(packet)
-
-                session.switchInboundState { session.packetProtocol.inboundState = ProtocolState.CONFIGURATION }
-                session.switchOutboundState { session.packetProtocol.outboundState = ProtocolState.CONFIGURATION }
-
-                client.setNextState(ProtocolState.CONFIGURATION)
             }
 
             else -> {
@@ -56,5 +47,13 @@ class ClientSessionListener(private val client: ProxyClient) : SessionAdapter() 
 
     override fun packetSent(session: Session, packet: Packet) {
         println("ProxyClient forwarded packet to server: ${packet.javaClass.simpleName}")
+
+        when (packet) {
+            is ServerboundLoginAcknowledgedPacket -> {
+                session.switchState(ProtocolState.CONFIGURATION)
+
+                client.setNextState(ProtocolState.CONFIGURATION)
+            }
+        }
     }
 }

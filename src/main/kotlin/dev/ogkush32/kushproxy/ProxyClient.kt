@@ -37,16 +37,14 @@ class ProxyClient(private val remoteHost: String, private val remotePort: Int) {
             return
         }
 
-        val session = currentSession!!
-
         if (packet is ClientIntentionPacket) {
-            handleIntentionPacket(session, packet)
+            handleIntentionPacket(currentSession!!, packet)
             return
         }
 
-        session.packetProtocol.inboundState = nextState
-        session.packetProtocol.outboundState = nextState
-        session.send(packet)
+        currentSession!!.switchState(nextState)
+
+        currentSession!!.send(packet)
     }
 
     private fun handleIntentionPacket(session: Session, packet: ClientIntentionPacket) {
@@ -57,8 +55,7 @@ class ProxyClient(private val remoteHost: String, private val remotePort: Int) {
 
         session.send(packet)
 
-        session.switchInboundState { session.packetProtocol.inboundState = newState }
-        session.switchOutboundState { session.packetProtocol.outboundState = newState }
+        session.switchState(newState)
 
         println("ProxyClient switched to $newState state due to ClientIntentionPacket")
         nextState = newState

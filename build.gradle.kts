@@ -15,7 +15,7 @@ repositories {
 
 dependencies {
     implementation("org.geysermc.mcprotocollib:protocol:1.21.7-1")
-    implementation("ch.qos.logback:logback-classic:1.5.19")
+    //implementation("ch.qos.logback:logback-classic:1.5.19")
 
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.10.2")
 
