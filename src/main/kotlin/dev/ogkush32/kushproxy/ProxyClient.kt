@@ -9,6 +9,7 @@ import org.geysermc.mcprotocollib.protocol.data.ProtocolState
 import org.geysermc.mcprotocollib.protocol.data.handshake.HandshakeIntent
 import org.geysermc.mcprotocollib.protocol.packet.handshake.serverbound.ClientIntentionPacket
 import org.geysermc.mcprotocollib.network.packet.Packet
+import org.geysermc.mcprotocollib.protocol.packet.configuration.serverbound.ServerboundFinishConfigurationPacket
 import java.net.InetSocketAddress
 
 class ProxyClient(private val remoteHost: String, private val remotePort: Int) {
@@ -44,6 +45,8 @@ class ProxyClient(private val remoteHost: String, private val remotePort: Int) {
 
         currentSession!!.switchState(nextState)
 
+        println("Sending ${packet.javaClass.simpleName} in state ${currentSession!!.packetProtocol.inboundState} & ${currentSession!!.packetProtocol.outboundState}")
+
         currentSession!!.send(packet)
     }
 
@@ -57,8 +60,8 @@ class ProxyClient(private val remoteHost: String, private val remotePort: Int) {
 
         session.switchState(newState)
 
-        println("ProxyClient switched to $newState state due to ClientIntentionPacket")
         nextState = newState
+        println("ProxyClient switched to $newState state due to ClientIntentionPacket")
     }
 
     fun disconnect(reason: String) {

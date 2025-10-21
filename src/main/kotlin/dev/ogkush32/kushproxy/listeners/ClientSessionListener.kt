@@ -9,6 +9,7 @@ import org.geysermc.mcprotocollib.protocol.data.ProtocolState
 import org.geysermc.mcprotocollib.protocol.packet.login.clientbound.ClientboundLoginCompressionPacket
 import org.geysermc.mcprotocollib.network.compression.CompressionConfig
 import org.geysermc.mcprotocollib.network.compression.ZlibCompression
+import org.geysermc.mcprotocollib.protocol.packet.configuration.serverbound.ServerboundFinishConfigurationPacket
 import org.geysermc.mcprotocollib.protocol.packet.login.serverbound.ServerboundLoginAcknowledgedPacket
 
 class ClientSessionListener(private val client: ProxyClient) : SessionAdapter() {
@@ -26,19 +27,21 @@ class ClientSessionListener(private val client: ProxyClient) : SessionAdapter() 
     override fun packetReceived(session: Session, packet: Packet) {
         println("ProxyClient received from server: ${packet.javaClass.simpleName}")
 
+        client.onPacketReceived?.invoke(packet)
+
         when (packet) {
             is ClientboundLoginCompressionPacket -> {
-                client.onPacketReceived?.invoke(packet)
                 val threshold = packet.threshold
                 if (threshold >= 0) {
                     session.setCompression(CompressionConfig(threshold, ZlibCompression(), false))
                 }
             }
-
-            else -> {
-                client.onPacketReceived?.invoke(packet)
-            }
         }
+    }
+
+    override fun packetError(event: PacketErrorEvent) {
+        println("Error in ClientSessionListener: ")
+        event.cause.printStackTrace()
     }
 
     override fun packetSending(event: PacketSendingEvent) {
@@ -53,6 +56,11 @@ class ClientSessionListener(private val client: ProxyClient) : SessionAdapter() 
                 session.switchState(ProtocolState.CONFIGURATION)
 
                 client.setNextState(ProtocolState.CONFIGURATION)
+            }
+            is ServerboundFinishConfigurationPacket -> {
+                session.switchState(ProtocolState.GAME)
+
+                client.setNextState(ProtocolState.GAME)
             }
         }
     }

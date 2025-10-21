@@ -11,17 +11,15 @@ object PacketHandler {
     fun handleServerToPlayerPacket(playerSession: Session, packet: Packet) {
         println("Server sent: ${packet.javaClass.simpleName}")
 
+        playerSession.send(packet)
+
         when (packet) {
             is ClientboundLoginCompressionPacket -> {
-                playerSession.send(packet)
-
                 val threshold = packet.threshold
                 if (threshold >= 0) {
                     playerSession.setCompression(CompressionConfig(threshold, ZlibCompression(), true))
                 }
             }
-
-            else -> playerSession.send(packet)
         }
     }
 }

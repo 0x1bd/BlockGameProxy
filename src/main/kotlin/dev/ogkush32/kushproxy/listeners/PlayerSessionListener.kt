@@ -4,6 +4,7 @@ import dev.ogkush32.kushproxy.ProxyClient
 import dev.ogkush32.kushproxy.switchState
 import org.geysermc.mcprotocollib.network.Session
 import org.geysermc.mcprotocollib.network.event.session.DisconnectedEvent
+import org.geysermc.mcprotocollib.network.event.session.PacketErrorEvent
 import org.geysermc.mcprotocollib.network.event.session.SessionAdapter
 import org.geysermc.mcprotocollib.network.packet.Packet
 import org.geysermc.mcprotocollib.protocol.data.ProtocolState
@@ -17,13 +18,12 @@ class PlayerSessionListener(private val client: ProxyClient) : SessionAdapter() 
     override fun packetReceived(session: Session, packet: Packet) {
         println("Player sent: ${packet.javaClass.simpleName} | State: ${session.packetProtocol.inboundState}")
 
-        if (packet is ClientIntentionPacket) {
-            handleIntentionPacket(session, packet)
-        }
+        when (packet) {
+            is ClientIntentionPacket -> handleIntentionPacket(session, packet)
 
-        if (packet is ServerboundLoginAcknowledgedPacket) {
-            session.switchState(ProtocolState.CONFIGURATION)
-            println("Player session switched to CONFIGURATION")
+            is ServerboundLoginAcknowledgedPacket -> {
+                session.switchState(ProtocolState.CONFIGURATION)
+            }
         }
 
         client.send(packet)
@@ -39,6 +39,11 @@ class PlayerSessionListener(private val client: ProxyClient) : SessionAdapter() 
         session.switchState(newState)
 
         println("ProxyServer switched player session to $newState")
+    }
+
+    override fun packetError(event: PacketErrorEvent) {
+        println("Error in PlayerSessionListener: ")
+        event.cause.printStackTrace()
     }
 
     override fun disconnected(event: DisconnectedEvent) {
