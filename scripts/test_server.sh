@@ -5,7 +5,7 @@ mkdir -p "$SERVER_DIR"
 cd "$SERVER_DIR" || exit
 
 echo "Downloading Minecraft server jar..."
-wget -O server.jar https://piston-data.mojang.com/v1/objects/05e4b48fbc01f0385adb74bcff9751d34552486c/server.jar
+wget -O server.jar https://piston-data.mojang.com/v1/objects/4707d00eb834b446575d89a61a11b5d548d8c001/server.jar
 
 echo "Agreeing to the EULA..."
 echo "eula=true" > eula.txt
