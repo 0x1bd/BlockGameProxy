@@ -37,21 +37,21 @@ class ProxyClientListener : SessionAdapter() {
     }
 
     override fun packetReceived(session: Session, packet: Packet) {
-        ProxyClient.LOGGER.debug("Packet received: ${packet.javaClass.simpleName}")
+        ProxyClient.LOGGER.debug("Packet received: $packet")
 
         PacketHandlerRegistries.CLIENT
             .getIncoming(packet::class)?.handle(session, packet)
     }
 
     override fun packetSent(session: Session, packet: Packet) {
-        ProxyClient.LOGGER.debug("Packet sent: ${packet.javaClass.simpleName}")
+        ProxyClient.LOGGER.debug("Packet sent: $packet")
 
         PacketHandlerRegistries.CLIENT
             .getPostOutgoing(packet::class)?.handle(session, packet)
     }
 
     override fun packetSending(event: PacketSendingEvent) {
-        ProxyClient.LOGGER.debug("Packet sending: ${event.packet.javaClass.simpleName}")
+        ProxyClient.LOGGER.debug("Packet sending: $event")
 
         val packet = event.packet
         val session = event.session
