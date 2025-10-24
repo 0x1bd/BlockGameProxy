@@ -10,7 +10,10 @@ class SHelloHandler : IncomingPacketHandler<ServerboundHelloPacket> {
 
     override fun handle(session: Session, packet: ServerboundHelloPacket): ServerboundHelloPacket {
         session.send(ClientboundHelloPacket(
-            "", BlockGameProxy.KEY_PAIR.public, BlockGameProxy.CHALLENGE, false
+            "",
+            BlockGameProxy.KEY_PAIR.public,
+            BlockGameProxy.CHALLENGE,
+            false
         ))
 
         return packet

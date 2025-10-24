@@ -5,6 +5,7 @@ import org.geysermc.mcprotocollib.protocol.data.game.KnownPack
 import org.geysermc.mcprotocollib.protocol.data.game.RegistryEntry
 import org.geysermc.mcprotocollib.protocol.data.game.entity.player.PlayerSpawnInfo
 import org.geysermc.mcprotocollib.protocol.data.game.setting.Difficulty
+import org.geysermc.mcprotocollib.protocol.packet.common.clientbound.ClientboundUpdateTagsPacket
 import org.geysermc.mcprotocollib.protocol.packet.ingame.clientbound.ClientboundUpdateRecipesPacket
 
 object SharedData {
@@ -15,7 +16,7 @@ object SharedData {
     class RegistryData(val key: Key, val entries: List<RegistryEntry>)
     val registryData: MutableList<RegistryData> = mutableListOf()
 
-    val tags: MutableMap<Key, MutableMap<Key, IntArray>> = mutableMapOf()
+    var tagsPacket: ClientboundUpdateTagsPacket? = null
 
     class LoginData(
         val entityId: Int,

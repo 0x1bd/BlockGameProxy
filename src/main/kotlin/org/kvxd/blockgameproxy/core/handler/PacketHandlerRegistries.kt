@@ -27,14 +27,13 @@ object PacketHandlerRegistries {
         CLIENT.registerIncoming(CUpdateRecipesHandler())
         CLIENT.registerIncoming(CUpdateTagsHandler())
 
-        SERVER.registerIncoming(SConfigurationHandler())
+        SERVER.registerIncoming(SFinishConfigurationHandler())
         SERVER.registerIncoming(SHelloHandler())
         SERVER.registerIncoming(SIntentHandler())
         SERVER.registerIncoming(SKeyHandler())
-        SERVER.registerIncoming(SKnownPacksHandler())
+        SERVER.registerIncoming(SLoginAckHandler())
         SERVER.registerIncoming(SPingHandler())
         SERVER.registerIncoming(SStatusHandler())
-        SERVER.registerIncoming(SCLoginHandler())
 
         //TODO: Add remaining handlers (position, light data, chunks etc.)
         //TODO: Generalize shared data. (NO SharedData singleton, instead BlockData, PlayerData, LoginData and so on.)

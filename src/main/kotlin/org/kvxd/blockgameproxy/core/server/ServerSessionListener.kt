@@ -7,13 +7,12 @@ import org.geysermc.mcprotocollib.network.event.session.PacketSendingEvent
 import org.geysermc.mcprotocollib.network.event.session.SessionAdapter
 import org.geysermc.mcprotocollib.network.packet.Packet
 import org.kvxd.blockgameproxy.core.ControlManager
-import org.kvxd.blockgameproxy.core.client.ProxyClient
 import org.kvxd.blockgameproxy.core.handler.PacketHandlerRegistries
 
 class ServerSessionListener : SessionAdapter() {
 
     override fun connected(event: ConnectedEvent) {
-        ProxyServer.LOGGER.debug("Server Session established: ${event.session.remoteAddress}")
+        ProxyServer.LOGGER.info("Server Session established: ${event.session.remoteAddress}")
 
         ProxyServer.currentSession = event.session
 
@@ -21,7 +20,7 @@ class ServerSessionListener : SessionAdapter() {
     }
 
     override fun packetReceived(session: Session, packet: Packet) {
-        ProxyServer.LOGGER.info("Server Session received: $packet")
+        ProxyServer.LOGGER.info("rec: $packet")
 
         val handler = PacketHandlerRegistries.SERVER
             .getIncoming(packet::class)
@@ -30,20 +29,20 @@ class ServerSessionListener : SessionAdapter() {
             handler.handle(session, packet)
         else {
             if (ControlManager.isControlledByServer()) {
-                ProxyClient.send(packet)
+
             }
         }
     }
 
     override fun packetSent(session: Session, packet: Packet) {
-        ProxyServer.LOGGER.info("Server Session sent: $packet")
+        ProxyServer.LOGGER.info("sent: $packet")
 
         PacketHandlerRegistries.SERVER
             .getPostOutgoing(packet::class)?.handle(session, packet)
     }
 
     override fun packetSending(event: PacketSendingEvent) {
-        ProxyServer.LOGGER.info("Server Session sending: ${event.packet.javaClass.simpleName}")
+        ProxyServer.LOGGER.info("sending: ${event.packet.javaClass.simpleName}")
 
         val packet = event.packet
         val session = event.session

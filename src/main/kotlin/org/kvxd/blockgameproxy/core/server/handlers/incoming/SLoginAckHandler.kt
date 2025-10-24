@@ -11,7 +11,7 @@ import org.kvxd.blockgameproxy.core.handler.IncomingPacketHandler
 import org.kvxd.blockgameproxy.core.shared.SharedData
 import org.kvxd.blockgameproxy.core.switchState
 
-class SCLoginHandler : IncomingPacketHandler<ServerboundLoginAcknowledgedPacket> {
+class SLoginAckHandler : IncomingPacketHandler<ServerboundLoginAcknowledgedPacket> {
 
     override fun handle(
         session: Session,
@@ -21,10 +21,15 @@ class SCLoginHandler : IncomingPacketHandler<ServerboundLoginAcknowledgedPacket>
 
         session.send(ClientboundSelectKnownPacks(SharedData.knownPacks))
 
+        SharedData.registryData.forEach { registryData ->
+            session.send(ClientboundRegistryDataPacket(registryData.key, registryData.entries))
+        }
+
+        SharedData.tagsPacket?.let { session.send(it) }
+
         session.send(ClientboundFinishConfigurationPacket())
 
         return packet
     }
-
 
 }

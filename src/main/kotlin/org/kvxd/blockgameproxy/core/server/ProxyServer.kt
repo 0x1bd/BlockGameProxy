@@ -2,13 +2,12 @@ package org.kvxd.blockgameproxy.core.server
 
 import org.geysermc.mcprotocollib.network.Session
 import org.geysermc.mcprotocollib.network.server.NetworkServer
+import org.geysermc.mcprotocollib.protocol.MinecraftProtocol
 import org.geysermc.mcprotocollib.protocol.codec.PacketCodec
 import org.kvxd.blockgameproxy.config.config
 import org.kvxd.blockgameproxy.core.createMinecraftProtocol
 import org.slf4j.LoggerFactory
 import java.net.InetSocketAddress
-import java.security.KeyPair
-import java.security.KeyPairGenerator
 
 object ProxyServer {
 
@@ -21,6 +20,8 @@ object ProxyServer {
     var currentSession: Session? = null
 
     val LOGGER = LoggerFactory.getLogger("Server")
+
+    val NETWORK_CODEC = MinecraftProtocol.loadNetworkCodec()
 
     fun start() {
         networkServer.addListener(ProxyServerListener())

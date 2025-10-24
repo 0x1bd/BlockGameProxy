@@ -15,9 +15,7 @@ class CUpdateTagsHandler : IncomingPacketHandler<ClientboundUpdateTagsPacket> {
         session: Session,
         packet: ClientboundUpdateTagsPacket
     ): ClientboundUpdateTagsPacket {
-        val packetTags = packet.tags
-
-        SharedData.tags.putAll(packetTags)
+        SharedData.tagsPacket = packet
 
         return packet
     }
