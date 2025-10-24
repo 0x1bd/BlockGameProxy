@@ -19,12 +19,11 @@ object PacketHandlerRegistries {
         CLIENT.registerIncoming(CLoginCompressionHandler())
         CLIENT.registerIncoming(CLoginFinishedHandler())
         CLIENT.registerIncoming(CCLoginHandler())
+        CLIENT.registerIncoming(CCommandsHandler())
         CLIENT.registerIncoming(CPlayerAbilitiesHandler())
         CLIENT.registerIncoming(CRegistryDataHandler())
         CLIENT.registerIncoming(CSelectKnownPacks())
         CLIENT.registerIncoming(CSetHeldSlotHandler())
-        CLIENT.registerIncoming(CUpdateFeaturesHandler())
-        CLIENT.registerIncoming(CUpdateRecipesHandler())
         CLIENT.registerIncoming(CUpdateTagsHandler())
 
         SERVER.registerIncoming(SFinishConfigurationHandler())

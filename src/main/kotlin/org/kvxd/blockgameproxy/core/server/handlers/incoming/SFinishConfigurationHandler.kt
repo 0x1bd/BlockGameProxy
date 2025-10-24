@@ -5,8 +5,8 @@ import org.geysermc.mcprotocollib.protocol.data.ProtocolState
 import org.geysermc.mcprotocollib.protocol.packet.configuration.serverbound.ServerboundFinishConfigurationPacket
 import org.geysermc.mcprotocollib.protocol.packet.ingame.clientbound.ClientboundCommandsPacket
 import org.geysermc.mcprotocollib.protocol.packet.ingame.clientbound.ClientboundLoginPacket
+import org.kvxd.blockgameproxy.core.cache.Cache
 import org.kvxd.blockgameproxy.core.handler.IncomingPacketHandler
-import org.kvxd.blockgameproxy.core.shared.SharedData
 import org.kvxd.blockgameproxy.core.switchState
 
 class SFinishConfigurationHandler : IncomingPacketHandler<ServerboundFinishConfigurationPacket> {
@@ -18,20 +18,20 @@ class SFinishConfigurationHandler : IncomingPacketHandler<ServerboundFinishConfi
         session.switchState(ProtocolState.GAME)
 
         session.send(ClientboundLoginPacket(
-            SharedData.loginData!!.entityId,
+            Cache.LOGIN.entityId,
             false,
-            SharedData.loginData!!.worldNames,
+            Cache.LOGIN.worldNames,
             20,
             16,
             16,
             false,
             false,
             false,
-            SharedData.loginData!!.commonPlayerSpawnInfo,
+            Cache.LOGIN.spawnInfo,
             false
         ))
 
-        session.send(ClientboundCommandsPacket(SharedData.commandNodes, SharedData.firstCommandNodeIndex))
+        session.send(ClientboundCommandsPacket(Cache.COMMAND.nodes, Cache.COMMAND.firstNodeIdx))
 
         return packet
     }

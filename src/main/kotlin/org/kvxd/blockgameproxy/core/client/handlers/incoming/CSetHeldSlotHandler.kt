@@ -3,7 +3,7 @@ package org.kvxd.blockgameproxy.core.client.handlers.incoming
 import org.kvxd.blockgameproxy.core.handler.IncomingPacketHandler
 import org.geysermc.mcprotocollib.network.Session
 import org.geysermc.mcprotocollib.protocol.packet.ingame.clientbound.entity.player.ClientboundSetHeldSlotPacket
-import org.kvxd.blockgameproxy.core.shared.SharedData
+import org.kvxd.blockgameproxy.core.cache.Cache
 
 class CSetHeldSlotHandler : IncomingPacketHandler<ClientboundSetHeldSlotPacket> {
 
@@ -11,7 +11,7 @@ class CSetHeldSlotHandler : IncomingPacketHandler<ClientboundSetHeldSlotPacket> 
         session: Session,
         packet: ClientboundSetHeldSlotPacket
     ): ClientboundSetHeldSlotPacket {
-        SharedData.heldSlot = packet.slot
+        Cache.PLAYER.heldSlot = packet.slot
 
         return packet
     }

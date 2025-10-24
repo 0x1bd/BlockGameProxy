@@ -2,12 +2,8 @@ package org.kvxd.blockgameproxy.core.client.handlers.incoming
 
 import org.kvxd.blockgameproxy.core.handler.IncomingPacketHandler
 import org.geysermc.mcprotocollib.network.Session
-import org.geysermc.mcprotocollib.protocol.packet.configuration.clientbound.ClientboundRegistryDataPacket
-import org.geysermc.mcprotocollib.protocol.packet.configuration.clientbound.ClientboundSelectKnownPacks
-import org.geysermc.mcprotocollib.protocol.packet.configuration.clientbound.ClientboundUpdateEnabledFeaturesPacket
-import org.geysermc.mcprotocollib.protocol.packet.configuration.serverbound.ServerboundSelectKnownPacks
 import org.geysermc.mcprotocollib.protocol.packet.ingame.clientbound.entity.player.ClientboundPlayerAbilitiesPacket
-import org.kvxd.blockgameproxy.core.shared.SharedData
+import org.kvxd.blockgameproxy.core.cache.Cache
 
 class CPlayerAbilitiesHandler : IncomingPacketHandler<ClientboundPlayerAbilitiesPacket> {
 
@@ -15,16 +11,14 @@ class CPlayerAbilitiesHandler : IncomingPacketHandler<ClientboundPlayerAbilities
         session: Session,
         packet: ClientboundPlayerAbilitiesPacket
     ): ClientboundPlayerAbilitiesPacket {
-        val data = SharedData.PlayerData(
-            packet.isInvincible,
-            packet.isCanFly,
-            packet.isFlying,
-            packet.isCreative,
-            packet.flySpeed,
-            packet.walkSpeed
-        )
-
-        SharedData.playerData = data
+        with(Cache.PLAYER) {
+            invincible = packet.isInvincible
+            canFly = packet.isCanFly
+            flying = packet.isFlying
+            creative = packet.isCreative
+            flySpeed = packet.flySpeed
+            walkSpeed = packet.walkSpeed
+        }
 
         return packet
     }

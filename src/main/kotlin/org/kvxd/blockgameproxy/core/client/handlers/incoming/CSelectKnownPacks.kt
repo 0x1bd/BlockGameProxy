@@ -4,7 +4,7 @@ import org.kvxd.blockgameproxy.core.handler.IncomingPacketHandler
 import org.geysermc.mcprotocollib.network.Session
 import org.geysermc.mcprotocollib.protocol.packet.configuration.clientbound.ClientboundSelectKnownPacks
 import org.geysermc.mcprotocollib.protocol.packet.configuration.serverbound.ServerboundSelectKnownPacks
-import org.kvxd.blockgameproxy.core.shared.SharedData
+import org.kvxd.blockgameproxy.core.cache.Cache
 
 class CSelectKnownPacks : IncomingPacketHandler<ClientboundSelectKnownPacks> {
 
@@ -12,7 +12,7 @@ class CSelectKnownPacks : IncomingPacketHandler<ClientboundSelectKnownPacks> {
         session: Session,
         packet: ClientboundSelectKnownPacks
     ): ClientboundSelectKnownPacks {
-        SharedData.knownPacks = packet.knownPacks
+        Cache.REGISTRY.knownPacks = packet.knownPacks
 
         session.send(ServerboundSelectKnownPacks(packet.knownPacks))
 
