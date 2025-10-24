@@ -3,6 +3,7 @@ package org.kvxd.blockgameproxy.core.shared
 import net.kyori.adventure.key.Key
 import org.geysermc.mcprotocollib.protocol.data.game.KnownPack
 import org.geysermc.mcprotocollib.protocol.data.game.RegistryEntry
+import org.geysermc.mcprotocollib.protocol.data.game.command.CommandNode
 import org.geysermc.mcprotocollib.protocol.data.game.entity.player.PlayerSpawnInfo
 import org.geysermc.mcprotocollib.protocol.data.game.setting.Difficulty
 import org.geysermc.mcprotocollib.protocol.packet.common.clientbound.ClientboundUpdateTagsPacket
@@ -52,6 +53,9 @@ object SharedData {
 
     var itemSets: MutableMap<Key, IntArray> = mutableMapOf()
     var stonecutterRecipes: MutableList<ClientboundUpdateRecipesPacket.SelectableRecipe> = mutableListOf()
+
+    var commandNodes = arrayOf<CommandNode>()
+    var firstCommandNodeIndex = -1
 
 
 }
