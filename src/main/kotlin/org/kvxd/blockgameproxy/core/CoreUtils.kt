@@ -23,6 +23,10 @@ fun Session.switchOutbound(state: ProtocolState) {
     switchOutboundState { packetProtocol.outboundState = state }
 }
 
+fun Session.getState(): ProtocolState =
+    if (packetProtocol.inboundState == packetProtocol.outboundState) packetProtocol.inboundState
+    else throw IllegalStateException("Inbound and Outbound state differ")
+
 fun HandshakeIntent.toProtocolState(): ProtocolState =
     when (this) {
         HandshakeIntent.STATUS -> ProtocolState.STATUS

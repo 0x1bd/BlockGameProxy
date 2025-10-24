@@ -19,8 +19,6 @@ class CRegistryDataHandler : IncomingPacketHandler<ClientboundRegistryDataPacket
             packet.entries
         )
 
-        SharedData.registryData.clear()
-
         SharedData.registryData += data
 
         return packet

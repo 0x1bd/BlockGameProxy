@@ -8,7 +8,9 @@ data class Config(
     val targetServerHost: String = "0.0.0.0",
     val targetServerPort: Int = 25565,
 
-    val profileName: String = "BlockGameProxy"
+    val profileName: String = "BlockGameProxy",
+
+    val serverId: String? = null
 )
 
 val config: Config

@@ -13,6 +13,7 @@ import org.geysermc.mcprotocollib.protocol.data.ProtocolState
 import org.geysermc.mcprotocollib.protocol.data.handshake.HandshakeIntent
 import org.geysermc.mcprotocollib.protocol.packet.handshake.serverbound.ClientIntentionPacket
 import org.geysermc.mcprotocollib.protocol.packet.login.serverbound.ServerboundHelloPacket
+import org.kvxd.blockgameproxy.core.server.ProxyServer
 import java.util.UUID
 
 class ProxyClientListener : SessionAdapter() {
@@ -39,8 +40,10 @@ class ProxyClientListener : SessionAdapter() {
     override fun packetReceived(session: Session, packet: Packet) {
         ProxyClient.LOGGER.debug("Packet received: $packet")
 
-        PacketHandlerRegistries.CLIENT
-            .getIncoming(packet::class)?.handle(session, packet)
+        val handler = PacketHandlerRegistries.CLIENT
+            .getIncoming(packet::class)
+
+        handler?.handle(session, packet)
     }
 
     override fun packetSent(session: Session, packet: Packet) {

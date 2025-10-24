@@ -1,6 +1,7 @@
 package org.kvxd.blockgameproxy.core.handler
 
 import org.kvxd.blockgameproxy.core.client.handlers.incoming.*
+import org.kvxd.blockgameproxy.core.server.handlers.incoming.*
 import org.slf4j.LoggerFactory
 
 object PacketHandlerRegistries {
@@ -17,7 +18,7 @@ object PacketHandlerRegistries {
         CLIENT.registerIncoming(CKeepAliveHandler())
         CLIENT.registerIncoming(CLoginCompressionHandler())
         CLIENT.registerIncoming(CLoginFinishedHandler())
-        CLIENT.registerIncoming(CLoginHandler())
+        CLIENT.registerIncoming(CCLoginHandler())
         CLIENT.registerIncoming(CPlayerAbilitiesHandler())
         CLIENT.registerIncoming(CRegistryDataHandler())
         CLIENT.registerIncoming(CSelectKnownPacks())
@@ -25,6 +26,15 @@ object PacketHandlerRegistries {
         CLIENT.registerIncoming(CUpdateFeaturesHandler())
         CLIENT.registerIncoming(CUpdateRecipesHandler())
         CLIENT.registerIncoming(CUpdateTagsHandler())
+
+        SERVER.registerIncoming(SConfigurationHandler())
+        SERVER.registerIncoming(SHelloHandler())
+        SERVER.registerIncoming(SIntentHandler())
+        SERVER.registerIncoming(SKeyHandler())
+        SERVER.registerIncoming(SKnownPacksHandler())
+        SERVER.registerIncoming(SPingHandler())
+        SERVER.registerIncoming(SStatusHandler())
+        SERVER.registerIncoming(SCLoginHandler())
 
         //TODO: Add remaining handlers (position, light data, chunks etc.)
         //TODO: Generalize shared data. (NO SharedData singleton, instead BlockData, PlayerData, LoginData and so on.)
