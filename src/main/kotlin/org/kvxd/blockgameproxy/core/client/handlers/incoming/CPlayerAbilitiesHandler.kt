@@ -11,7 +11,7 @@ class CPlayerAbilitiesHandler : IncomingPacketHandler<ClientboundPlayerAbilities
         session: Session,
         packet: ClientboundPlayerAbilitiesPacket
     ): ClientboundPlayerAbilitiesPacket {
-        with(Cache.PLAYER) {
+        with(Cache.PLAYER.abilities) {
             invincible = packet.isInvincible
             canFly = packet.isCanFly
             flying = packet.isFlying

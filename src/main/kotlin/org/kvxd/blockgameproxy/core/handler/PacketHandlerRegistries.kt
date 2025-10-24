@@ -28,9 +28,13 @@ object PacketHandlerRegistries {
         registerIncoming(CLoginCompressionHandler())
         registerIncoming(CLoginFinishedHandler())
         registerIncoming(CPlayerAbilitiesHandler())
+        registerIncoming(CPlayerPosHandler())
         registerIncoming(CRegistryDataHandler())
         registerIncoming(CSelectKnownPacks())
+        registerIncoming(CSetExperienceHandler())
+        registerIncoming(CSetHealthHandler())
         registerIncoming(CSetHeldSlotHandler())
+        registerIncoming(CSetTimeHandler())
         registerIncoming(CUpdateTagsHandler())
     }
 

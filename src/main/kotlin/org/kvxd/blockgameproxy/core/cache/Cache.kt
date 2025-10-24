@@ -1,9 +1,6 @@
 package org.kvxd.blockgameproxy.core.cache
 
-import org.kvxd.blockgameproxy.core.cache.caches.CommandCache
-import org.kvxd.blockgameproxy.core.cache.caches.LoginCache
-import org.kvxd.blockgameproxy.core.cache.caches.PlayerCache
-import org.kvxd.blockgameproxy.core.cache.caches.RegistryCache
+import org.kvxd.blockgameproxy.core.cache.caches.*
 
 object Cache {
 
@@ -11,5 +8,6 @@ object Cache {
     val PLAYER = PlayerCache()
     val LOGIN = LoginCache()
     val REGISTRY = RegistryCache()
+    val WORLD = WorldCache()
 
 }
