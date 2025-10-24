@@ -6,10 +6,10 @@ import org.geysermc.mcprotocollib.protocol.packet.login.clientbound.ClientboundL
 import org.geysermc.mcprotocollib.protocol.packet.login.clientbound.ClientboundLoginFinishedPacket
 import org.geysermc.mcprotocollib.protocol.packet.login.serverbound.ServerboundKeyPacket
 import org.kvxd.blockgameproxy.BlockGameProxy
+import org.kvxd.blockgameproxy.core.cache.Cache
 import org.kvxd.blockgameproxy.core.createEncryption
 import org.kvxd.blockgameproxy.core.handler.IncomingPacketHandler
 import org.kvxd.blockgameproxy.core.setCompressionThreshold
-import java.util.*
 
 class SKeyHandler : IncomingPacketHandler<ServerboundKeyPacket> {
 
@@ -24,7 +24,10 @@ class SKeyHandler : IncomingPacketHandler<ServerboundKeyPacket> {
         session.send(ClientboundLoginCompressionPacket(256))
         session.setCompressionThreshold(256)
 
-        val profile = GameProfile(UUID.nameUUIDFromBytes(("OfflinePlayer:" + "OGKush32").toByteArray()), "OGKush32")
+        val profile = GameProfile(
+            Cache.PLAYER.uuid,
+            Cache.PLAYER.username
+        )
 
         session.send(ClientboundLoginFinishedPacket(profile))
 
