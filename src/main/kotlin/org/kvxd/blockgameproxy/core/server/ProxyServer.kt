@@ -17,8 +17,6 @@ object ProxyServer {
 
     private val networkServer = NetworkServer(InetSocketAddress(config.bindPort), ::protocol)
 
-    var currentSession: Session? = null
-
     val LOGGER = LoggerFactory.getLogger("Server")
 
     val NETWORK_CODEC = MinecraftProtocol.loadNetworkCodec()

@@ -6,7 +6,7 @@ import org.geysermc.mcprotocollib.network.event.session.DisconnectedEvent
 import org.geysermc.mcprotocollib.network.event.session.PacketSendingEvent
 import org.geysermc.mcprotocollib.network.event.session.SessionAdapter
 import org.geysermc.mcprotocollib.network.packet.Packet
-import org.kvxd.blockgameproxy.core.ControlManager
+import org.kvxd.blockgameproxy.BlockGameProxy
 import org.kvxd.blockgameproxy.core.handler.PacketHandlerRegistries
 
 class ServerSessionListener : SessionAdapter() {
@@ -14,9 +14,10 @@ class ServerSessionListener : SessionAdapter() {
     override fun connected(event: ConnectedEvent) {
         ProxyServer.LOGGER.info("Server Session established: ${event.session.remoteAddress}")
 
-        ProxyServer.currentSession = event.session
+        if (BlockGameProxy.currentPlayer == null)
+            event.session.disconnect("Proxy not ready yet")
 
-        ControlManager.transferToServerSession()
+        BlockGameProxy.currentPlayer = event.session
     }
 
     override fun packetReceived(session: Session, packet: Packet) {
@@ -25,13 +26,7 @@ class ServerSessionListener : SessionAdapter() {
         val handler = PacketHandlerRegistries.SERVER
             .getIncoming(packet::class)
 
-        if (handler != null)
-            handler.handle(session, packet)
-        else {
-            if (ControlManager.isControlledByServer()) {
-
-            }
-        }
+        handler?.handle(session, packet)
     }
 
     override fun packetSent(session: Session, packet: Packet) {
@@ -52,9 +47,7 @@ class ServerSessionListener : SessionAdapter() {
     }
 
     override fun disconnected(event: DisconnectedEvent) {
-        ProxyServer.currentSession = null
-
-        ControlManager.transferToClient()
+        BlockGameProxy.currentPlayer = null
     }
 
 }
