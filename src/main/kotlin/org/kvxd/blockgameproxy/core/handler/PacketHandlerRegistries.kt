@@ -21,6 +21,7 @@ object PacketHandlerRegistries {
     }
 
     private fun PacketHandlerRegistry.registerClientIncoming() {
+        registerIncoming(CChunkHandler())
         registerIncoming(CCLoginHandler())
         registerIncoming(CCommandsHandler())
         registerIncoming(CFinishConfigurationHandler())

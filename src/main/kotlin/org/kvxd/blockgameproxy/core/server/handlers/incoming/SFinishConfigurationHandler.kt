@@ -2,10 +2,14 @@ package org.kvxd.blockgameproxy.core.server.handlers.incoming
 
 import org.geysermc.mcprotocollib.network.Session
 import org.geysermc.mcprotocollib.protocol.data.ProtocolState
+import org.geysermc.mcprotocollib.protocol.data.game.level.notify.GameEvent
 import org.geysermc.mcprotocollib.protocol.packet.configuration.serverbound.ServerboundFinishConfigurationPacket
 import org.geysermc.mcprotocollib.protocol.packet.ingame.clientbound.ClientboundCommandsPacket
 import org.geysermc.mcprotocollib.protocol.packet.ingame.clientbound.ClientboundLoginPacket
 import org.geysermc.mcprotocollib.protocol.packet.ingame.clientbound.entity.player.ClientboundPlayerPositionPacket
+import org.geysermc.mcprotocollib.protocol.packet.ingame.clientbound.level.ClientboundChunkBatchFinishedPacket
+import org.geysermc.mcprotocollib.protocol.packet.ingame.clientbound.level.ClientboundChunkBatchStartPacket
+import org.geysermc.mcprotocollib.protocol.packet.ingame.clientbound.level.ClientboundGameEventPacket
 import org.kvxd.blockgameproxy.core.cache.Cache
 import org.kvxd.blockgameproxy.core.handler.IncomingPacketHandler
 import org.kvxd.blockgameproxy.core.switchState
@@ -48,6 +52,20 @@ class SFinishConfigurationHandler : IncomingPacketHandler<ServerboundFinishConfi
                 )
             )
         }
+
+        with(Cache.CHUNK) {
+            session.send(ClientboundChunkBatchStartPacket())
+
+            val packets = buildChunkSyncPackets()
+
+            packets .forEach(session::send)
+
+            session.send(ClientboundChunkBatchFinishedPacket(packets.size))
+        }
+
+        session.send(ClientboundGameEventPacket(
+            GameEvent.LEVEL_CHUNKS_LOAD_START, null
+        ))
 
         return packet
     }
