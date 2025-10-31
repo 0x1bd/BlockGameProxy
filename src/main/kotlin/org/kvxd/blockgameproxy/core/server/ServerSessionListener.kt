@@ -14,10 +14,6 @@ class ServerSessionListener : SessionAdapter() {
     override fun connected(event: ConnectedEvent) {
         ProxyServer.LOGGER.info("Server Session established: ${event.session.remoteAddress}")
 
-        if (BlockGameProxy.currentPlayer == null)
-            event.session.disconnect("Proxy not ready yet")
-
-        BlockGameProxy.currentPlayer = event.session
     }
 
     override fun packetReceived(session: Session, packet: Packet) {
@@ -47,7 +43,7 @@ class ServerSessionListener : SessionAdapter() {
     }
 
     override fun disconnected(event: DisconnectedEvent) {
-        BlockGameProxy.currentPlayer = null
+
     }
 
 }
