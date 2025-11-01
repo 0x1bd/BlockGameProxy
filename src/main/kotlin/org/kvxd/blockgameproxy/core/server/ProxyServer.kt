@@ -8,6 +8,7 @@ import org.kvxd.blockgameproxy.config.config
 import org.kvxd.blockgameproxy.core.createMinecraftProtocol
 import org.kvxd.blockgameproxy.core.server.tick.TickSystem
 import org.kvxd.blockgameproxy.core.server.tick.TickTask
+import org.kvxd.blockgameproxy.core.server.tick.tasks.KeepAliveTask
 import org.slf4j.LoggerFactory
 import java.net.InetSocketAddress
 
@@ -30,19 +31,7 @@ object ProxyServer {
 
         TickSystem.start()
 
-        TickSystem.registerTask(object : TickTask {
-            override fun tick(currentTick: Int) {
-                val fifteenSecondsTicks = 15 * 20
-
-                if (currentTick % fifteenSecondsTicks == 0) {
-                    println("Sending keep alive. ${ServerSessionListener.currentSession}")
-
-                    ServerSessionListener.currentSession?.send(
-                        ClientboundKeepAlivePacket(System.currentTimeMillis())
-                    )
-                }
-            }
-        })
+        TickSystem.registerTask(KeepAliveTask())
     }
 
     fun stop() {
