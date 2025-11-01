@@ -7,7 +7,9 @@ data class Config(
     val bindPort: Int = 25566,
     val targetServer: TargetServer = TargetServer(),
 
-    val profileName: String = "BlockGameProxy"
+    val profileName: String = "BlockGameProxy",
+
+    val reconnectDelaySeconds: Long = 5L
 )
 
 @Serializable

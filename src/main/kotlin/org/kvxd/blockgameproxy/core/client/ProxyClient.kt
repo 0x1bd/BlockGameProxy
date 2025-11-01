@@ -9,29 +9,28 @@ import org.slf4j.LoggerFactory
 
 object ProxyClient {
 
-    private lateinit var networkClient: ClientNetworkSession
+    private var networkClient: ClientNetworkSession? = null
     val protocol = createMinecraftProtocol()
 
     val LOGGER = LoggerFactory.getLogger(ProxyClient::class.java)
 
-    fun initialize() {
+    fun connect(): ClientNetworkSession? {
         networkClient = ClientNetworkSessionFactory.factory()
             .setAddress(config.targetServer.host, config.targetServer.port)
             .setProtocol(protocol)
             .create()
 
-        networkClient.addListener(ProxyClientListener())
-    }
+        networkClient?.apply {
+            addListener(ProxyClientReconnectListener())
+            addListener(ProxyClientListener())
+            connect()
+        }
 
-    fun connect() {
-        if (!::networkClient.isInitialized)
-            throw IllegalStateException("ProxyClient not initialized")
-
-        networkClient.connect()
+        return networkClient
     }
 
     fun send(packet: Packet) {
-        networkClient.send(packet)
+        networkClient?.send(packet) ?: LOGGER.warn("Cannot send packet, client not connected")
     }
 
 }

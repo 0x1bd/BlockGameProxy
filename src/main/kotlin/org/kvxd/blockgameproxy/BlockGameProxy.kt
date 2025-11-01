@@ -24,7 +24,6 @@ object BlockGameProxy {
 
         PacketHandlerRegistries.initialize()
 
-        ProxyClient.initialize()
         ProxyClient.connect()
 
         ProxyServer.start()
