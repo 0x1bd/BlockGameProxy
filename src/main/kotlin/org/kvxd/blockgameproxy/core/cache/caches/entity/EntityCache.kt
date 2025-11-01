@@ -2,11 +2,13 @@ package org.kvxd.blockgameproxy.core.cache.caches.entity
 
 import org.cloudburstmc.math.vector.Vector3d
 import org.geysermc.mcprotocollib.network.Session
+import org.geysermc.mcprotocollib.protocol.data.game.entity.type.EntityType
 import org.geysermc.mcprotocollib.protocol.packet.ingame.clientbound.entity.ClientboundEntityPositionSyncPacket
 import org.geysermc.mcprotocollib.protocol.packet.ingame.clientbound.entity.ClientboundMoveEntityPosPacket
 import org.geysermc.mcprotocollib.protocol.packet.ingame.clientbound.entity.ClientboundMoveEntityPosRotPacket
 import org.geysermc.mcprotocollib.protocol.packet.ingame.clientbound.entity.ClientboundMoveEntityRotPacket
 import org.geysermc.mcprotocollib.protocol.packet.ingame.clientbound.entity.ClientboundTeleportEntityPacket
+import org.geysermc.mcprotocollib.protocol.packet.ingame.clientbound.entity.player.ClientboundPlayerRotationPacket
 import org.geysermc.mcprotocollib.protocol.packet.ingame.clientbound.entity.spawn.ClientboundAddEntityPacket
 import org.kvxd.blockgameproxy.core.cache.SyncableCache
 
@@ -14,6 +16,8 @@ object EntityCache : SyncableCache() {
 
     // id = entity
     val entities = mutableMapOf<Int, Entity>()
+
+    var clientPlayer: Entity? = null
 
     fun handleSpawnPacket(packet: ClientboundAddEntityPacket) {
         entities[packet.entityId] = Entity(
@@ -35,6 +39,10 @@ object EntityCache : SyncableCache() {
                 packet.motionZ
             )
         )
+
+        if (packet.type == EntityType.PLAYER) {
+
+        }
     }
 
     fun handleSyncPacket(packet: ClientboundEntityPositionSyncPacket) {
@@ -92,6 +100,13 @@ object EntityCache : SyncableCache() {
         entity.pitch = packet.pitch
 
         entity.onGround = packet.isOnGround
+    }
+
+    fun handlePlayerRot(packet: ClientboundPlayerRotationPacket) {
+        checkNotNull(clientPlayer)
+
+        clientPlayer!!.yaw = packet.xRot
+        clientPlayer!!.pitch = packet.yRot
     }
 
     fun buildSpawnSyncPackets(): List<ClientboundAddEntityPacket> {

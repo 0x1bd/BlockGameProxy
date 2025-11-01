@@ -4,6 +4,7 @@ import org.geysermc.mcprotocollib.network.Session
 import org.geysermc.mcprotocollib.protocol.packet.ingame.clientbound.ClientboundLoginPacket
 import org.kvxd.blockgameproxy.core.cache.caches.LoginCache
 import org.kvxd.blockgameproxy.core.cache.caches.chunk.ChunkCache
+import org.kvxd.blockgameproxy.core.cache.caches.entity.EntityCache
 import org.kvxd.blockgameproxy.core.handler.IncomingPacketHandler
 
 class CCLoginHandler : IncomingPacketHandler<ClientboundLoginPacket> {
@@ -13,6 +14,7 @@ class CCLoginHandler : IncomingPacketHandler<ClientboundLoginPacket> {
         packet: ClientboundLoginPacket
     ): ClientboundLoginPacket {
         LoginCache.entityId = packet.entityId
+        EntityCache.clientPlayer = EntityCache.entities[packet.entityId]
         LoginCache.spawnInfo = packet.commonPlayerSpawnInfo
 
         ChunkCache.worldNames = packet.worldNames

@@ -6,6 +6,7 @@ import org.geysermc.mcprotocollib.protocol.packet.ingame.clientbound.entity.Clie
 import org.geysermc.mcprotocollib.protocol.packet.ingame.clientbound.entity.ClientboundMoveEntityPosRotPacket
 import org.geysermc.mcprotocollib.protocol.packet.ingame.clientbound.entity.ClientboundMoveEntityRotPacket
 import org.geysermc.mcprotocollib.protocol.packet.ingame.clientbound.entity.ClientboundTeleportEntityPacket
+import org.geysermc.mcprotocollib.protocol.packet.ingame.clientbound.entity.player.ClientboundPlayerRotationPacket
 import org.geysermc.mcprotocollib.protocol.packet.ingame.clientbound.entity.spawn.ClientboundAddEntityPacket
 import org.kvxd.blockgameproxy.core.cache.caches.entity.EntityCache
 import org.kvxd.blockgameproxy.core.handler.IncomingPacketHandler
@@ -20,6 +21,8 @@ object CEntityHandlers {
         registerIncoming(CMovePosHandler())
         registerIncoming(CMoveRotHandler())
         registerIncoming(CMovePosRotHandler())
+
+        registerIncoming(CPlayerRotHandler())
     }
 
 }
@@ -89,6 +92,19 @@ class CMovePosRotHandler : IncomingPacketHandler<ClientboundMoveEntityPosRotPack
         packet: ClientboundMoveEntityPosRotPacket
     ): ClientboundMoveEntityPosRotPacket {
         EntityCache.handleMovePosRot(packet)
+
+        return packet
+    }
+
+}
+
+class CPlayerRotHandler : IncomingPacketHandler<ClientboundPlayerRotationPacket> {
+
+    override fun process(
+        session: Session,
+        packet: ClientboundPlayerRotationPacket
+    ): ClientboundPlayerRotationPacket {
+        EntityCache.handlePlayerRot(packet)
 
         return packet
     }

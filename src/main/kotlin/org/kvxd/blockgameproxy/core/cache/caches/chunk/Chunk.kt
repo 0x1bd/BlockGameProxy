@@ -11,11 +11,12 @@ class Chunk(
     val sections: List<ChunkSection>,
     val maxSection: Int,
     val minSection: Int,
-    val blockEntities: List<BlockEntityInfo>,
+    var blockEntities: List<BlockEntityInfo>,
     var lightUpdateData: LightUpdateData?
 ) {
 
     companion object {
+
         private const val UINT_MASK: Long = 4294967295L
 
         val EMPTY_HEIGHT_MAP = NbtMap.EMPTY

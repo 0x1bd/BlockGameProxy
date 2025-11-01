@@ -6,6 +6,8 @@ import org.geysermc.mcprotocollib.network.Session
 import org.geysermc.mcprotocollib.protocol.codec.MinecraftTypes
 import org.geysermc.mcprotocollib.protocol.data.game.chunk.ChunkSection
 import org.geysermc.mcprotocollib.protocol.data.game.level.LightUpdateData
+import org.geysermc.mcprotocollib.protocol.data.game.level.block.BlockEntityInfo
+import org.geysermc.mcprotocollib.protocol.packet.ingame.clientbound.level.ClientboundBlockEntityDataPacket
 import org.geysermc.mcprotocollib.protocol.packet.ingame.clientbound.level.ClientboundBlockUpdatePacket
 import org.geysermc.mcprotocollib.protocol.packet.ingame.clientbound.level.ClientboundChunkBatchFinishedPacket
 import org.geysermc.mcprotocollib.protocol.packet.ingame.clientbound.level.ClientboundChunkBatchStartPacket
@@ -85,6 +87,34 @@ object ChunkCache : SyncableCache() {
 
     fun unloadChunk(x: Int, z: Int) {
         chunks.remove(Chunk.toLong(x, z))
+    }
+
+    fun handleBlockEntityData(packet: ClientboundBlockEntityDataPacket) {
+        val chunkX = packet.position.x shr 4
+        val chunkZ = packet.position.z shr 4
+        val chunk = chunks[Chunk.toLong(chunkX, chunkZ)] ?: return
+
+        val updateBlockEntities = chunk.blockEntities.toMutableList()
+
+        val existingIndex = updateBlockEntities.indexOfFirst {
+            it.x == packet.position.x
+            it.y == packet.position.y
+            it.z == packet.position.z
+        }
+
+        val blockEntityInfo = BlockEntityInfo(
+            packet.position.x,
+            packet.position.y,
+            packet.position.z,
+            packet.type,
+            packet.nbt
+        )
+
+        if (existingIndex >= 0) {
+            updateBlockEntities[existingIndex] = blockEntityInfo
+        }
+
+        chunk.blockEntities = updateBlockEntities
     }
 
     fun buildChunkSyncPackets(): List<ClientboundLevelChunkWithLightPacket> {

@@ -1,11 +1,13 @@
 package org.kvxd.blockgameproxy.core.handler
 
+import org.kvxd.blockgameproxy.core.client.handlers.incoming.CBlockEntityDataHandler
 import org.kvxd.blockgameproxy.core.client.handlers.incoming.CBlockUpdateHandler
 import org.kvxd.blockgameproxy.core.client.handlers.incoming.CCLoginHandler
 import org.kvxd.blockgameproxy.core.client.handlers.incoming.CChunkHandler
 import org.kvxd.blockgameproxy.core.client.handlers.incoming.CCommandsHandler
 import org.kvxd.blockgameproxy.core.client.handlers.incoming.CEntityHandlers.registerEntityHandlers
 import org.kvxd.blockgameproxy.core.client.handlers.incoming.CFinishConfigurationHandler
+import org.kvxd.blockgameproxy.core.client.handlers.incoming.CForgetChunkHandler
 import org.kvxd.blockgameproxy.core.client.handlers.incoming.CKeepAliveHandler
 import org.kvxd.blockgameproxy.core.client.handlers.incoming.CLightHandler
 import org.kvxd.blockgameproxy.core.client.handlers.incoming.CLoginCompressionHandler
@@ -47,12 +49,14 @@ object PacketHandlerRegistries {
     }
 
     private fun PacketHandlerRegistry.registerClientIncoming() {
+        registerIncoming(CBlockEntityDataHandler())
         registerIncoming(CBlockUpdateHandler())
         registerIncoming(CChunkHandler())
         registerIncoming(CCLoginHandler())
         registerIncoming(CCommandsHandler())
         registerEntityHandlers()
         registerIncoming(CFinishConfigurationHandler())
+        registerIncoming(CForgetChunkHandler())
         registerIncoming(CKeepAliveHandler())
         registerIncoming(CLightHandler())
         registerIncoming(CLoginCompressionHandler())

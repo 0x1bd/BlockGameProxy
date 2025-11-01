@@ -10,6 +10,7 @@ import org.geysermc.mcprotocollib.protocol.packet.ingame.clientbound.level.Clien
 import org.kvxd.blockgameproxy.core.cache.caches.CommandCache
 import org.kvxd.blockgameproxy.core.cache.caches.LoginCache
 import org.kvxd.blockgameproxy.core.cache.caches.PlayerCache
+import org.kvxd.blockgameproxy.core.cache.caches.TabListCache
 import org.kvxd.blockgameproxy.core.cache.caches.chunk.ChunkCache
 import org.kvxd.blockgameproxy.core.cache.caches.entity.EntityCache
 import org.kvxd.blockgameproxy.core.handler.IncomingPacketHandler
@@ -53,6 +54,8 @@ class SFinishConfigurationHandler : IncomingPacketHandler<ServerboundFinishConfi
                 )
             )
         }
+
+        TabListCache.sync(session)
 
         session.send(
             ClientboundGameEventPacket(
