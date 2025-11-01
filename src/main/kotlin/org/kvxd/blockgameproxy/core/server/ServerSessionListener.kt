@@ -1,7 +1,6 @@
 package org.kvxd.blockgameproxy.core.server
 
 import org.geysermc.mcprotocollib.network.Session
-import org.geysermc.mcprotocollib.network.event.session.ConnectedEvent
 import org.geysermc.mcprotocollib.network.event.session.DisconnectedEvent
 import org.geysermc.mcprotocollib.network.event.session.PacketSendingEvent
 import org.geysermc.mcprotocollib.network.event.session.SessionAdapter
@@ -12,12 +11,6 @@ import org.kvxd.blockgameproxy.core.getState
 import org.kvxd.blockgameproxy.core.handler.PacketHandlerRegistries
 
 class ServerSessionListener : SessionAdapter() {
-
-    override fun connected(event: ConnectedEvent) {
-        ProxyServer.LOGGER.info("Server Session established: ${event.session.remoteAddress}")
-
-        currentSession = event.session
-    }
 
     companion object {
         var currentSession: Session? = null

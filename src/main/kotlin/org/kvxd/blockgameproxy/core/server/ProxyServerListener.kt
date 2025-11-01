@@ -6,6 +6,7 @@ import org.geysermc.mcprotocollib.network.event.server.ServerClosedEvent
 import org.geysermc.mcprotocollib.network.event.server.SessionAddedEvent
 import org.kvxd.blockgameproxy.BlockGameProxy
 import org.kvxd.blockgameproxy.core.ControlParty
+import org.kvxd.blockgameproxy.core.server.ServerSessionListener.Companion.currentSession
 
 class ProxyServerListener : ServerAdapter() {
 
@@ -18,6 +19,10 @@ class ProxyServerListener : ServerAdapter() {
     }
 
     override fun sessionAdded(event: SessionAddedEvent) {
+        ProxyServer.LOGGER.info("Server Session established")
+
+        currentSession = event.session
+
         event.session.addListener(ServerSessionListener())
     }
 

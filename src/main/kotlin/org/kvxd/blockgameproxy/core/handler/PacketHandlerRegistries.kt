@@ -20,15 +20,18 @@ object PacketHandlerRegistries {
     }
 
     private fun PacketHandlerRegistry.registerClientIncoming() {
+        registerIncoming(CBlockUpdateHandler())
         registerIncoming(CChunkHandler())
         registerIncoming(CCLoginHandler())
         registerIncoming(CFinishConfigurationHandler())
+        registerIncoming(CKeepAliveHandler())
         registerIncoming(CLightHandler())
         registerIncoming(CLoginCompressionHandler())
         registerIncoming(CLoginFinishedHandler())
         registerIncoming(CPlayerAbilitiesHandler())
         registerIncoming(CPlayerPosHandler())
         registerIncoming(CRegistryDataHandler())
+        registerIncoming(CSectionBlocksUpdateHandler())
         registerIncoming(CSelectKnownPacks())
         registerIncoming(CUpdateTagsHandler())
     }
@@ -41,8 +44,11 @@ object PacketHandlerRegistries {
         registerIncoming(SFinishConfigurationHandler())
         registerIncoming(SHelloHandler())
         registerIncoming(SIntentHandler())
+        registerIncoming(SKeepAliveHandler())
         registerIncoming(SKeyHandler())
         registerIncoming(SLoginAckHandler())
+        registerIncoming(SMovePlayerPosHandler())
+        registerIncoming(SMovePlayerPosRotHandler())
         registerIncoming(SPingHandler())
         registerIncoming(SStatusHandler())
     }
