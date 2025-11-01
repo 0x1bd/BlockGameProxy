@@ -39,6 +39,8 @@ class SFinishConfigurationHandler : IncomingPacketHandler<ServerboundFinishConfi
             )
         )
 
+        CommandCache.sync(session)
+
         with(PlayerCache) {
             session.send(
                 ClientboundPlayerPositionPacket(
@@ -52,17 +54,15 @@ class SFinishConfigurationHandler : IncomingPacketHandler<ServerboundFinishConfi
             )
         }
 
-        ChunkCache.sync(session)
-
         session.send(
             ClientboundGameEventPacket(
                 GameEvent.LEVEL_CHUNKS_LOAD_START, null
             )
         )
 
-        EntityCache.sync(session)
+        ChunkCache.sync(session)
 
-        CommandCache.sync(session)
+        EntityCache.sync(session)
 
         return packet
     }
