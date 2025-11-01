@@ -7,12 +7,20 @@ single player connection and forwards gameplay traffic between that player and t
 
 ## Diagram
 
+### Normal
+
 ```mermaid
 flowchart TD
-    Player["Player"] -->|connects to| ProxyServer["Proxy Server"]
-    ProxyServer -->|forwards packets to| ProxyClient["Proxy Client<br/>(online on target server 24/7)"]
-    ProxyClient -->|maintains persistent connection to| Target["Target Server"]
-    ProxyClient -->|sends/receives world data| ProxyServer
+    Player <--> Target["Target Server"]
+```
+
+### BGP
+
+```mermaid
+flowchart TD
+    Player <--> ProxyServer["Proxy Server"]
+    ProxyServer <--> ProxyClient["Proxy Client<br/>(online on target server 24/7)"]
+    ProxyClient <--> Target["Target Server"]
 ```
 
 ## What it does
