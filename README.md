@@ -8,7 +8,7 @@ single player connection and forwards gameplay traffic between that player and t
 ## Diagram
 
 ```mermaid
-flowchart LR
+flowchart TD
     Player["Player"] -->|connects to| ProxyServer["Proxy Server"]
     ProxyServer -->|forwards packets to| ProxyClient["Proxy Client<br/>(online on target server 24/7)"]
     ProxyClient -->|maintains persistent connection to| Target["Target Server"]
