@@ -1,7 +1,6 @@
 plugins {
-    kotlin("jvm") version "2.2.20"
-    kotlin("plugin.serialization") version "2.2.0"
-    application
+    alias(libs.plugins.kotlin.jvm)
+    alias(libs.plugins.kotlin.serialization)
 }
 
 group = "org.kvxd"
@@ -19,13 +18,12 @@ repositories {
 }
 
 dependencies {
-    implementation("org.geysermc.mcprotocollib:protocol:1.21.4-SNAPSHOT")
-    implementation("ch.qos.logback:logback-classic:1.5.19")
-    implementation("com.charleskorn.kaml:kaml:0.102.0")
+    implementation(libs.kotlinx.coroutines.core)
+    implementation(libs.logback.classic)
+    implementation(libs.kaml)
 
-    implementation("net.kyori:adventure-text-minimessage:4.25.0")
-
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.10.2")
+    implementation(libs.adventure.text.minimessage)
+    implementation(libs.mcprotocollib.protocol)
 
     testImplementation(kotlin("test"))
 }
@@ -36,10 +34,6 @@ tasks.test {
 
 kotlin {
     jvmToolchain(21)
-}
-
-application {
-    mainClass.set("MainKt")
 }
 
 tasks.named<Jar>("jar") {
