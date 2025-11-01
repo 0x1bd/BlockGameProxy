@@ -22,6 +22,8 @@ dependencies {
     implementation("ch.qos.logback:logback-classic:1.5.19")
     implementation("com.charleskorn.kaml:kaml:0.102.0")
 
+    implementation("net.kyori:adventure-text-minimessage:4.25.0")
+
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.10.2")
 
     testImplementation(kotlin("test"))

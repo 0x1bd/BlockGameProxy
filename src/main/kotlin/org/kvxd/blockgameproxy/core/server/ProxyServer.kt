@@ -23,6 +23,9 @@ object ProxyServer {
 
     var currentSession: Session? = null
 
+    val acceptsConnections: Boolean
+        get() = currentSession == null
+
     val LOGGER = LoggerFactory.getLogger(ProxyServer::class.java)
 
     fun start() {
