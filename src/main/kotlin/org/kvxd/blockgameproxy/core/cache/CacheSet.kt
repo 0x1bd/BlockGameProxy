@@ -3,6 +3,7 @@ package org.kvxd.blockgameproxy.core.cache
 import org.kvxd.blockgameproxy.core.cache.caches.LoginCache
 import org.kvxd.blockgameproxy.core.cache.caches.PlayerCache
 import org.kvxd.blockgameproxy.core.cache.caches.RegistryCache
+import org.kvxd.blockgameproxy.core.cache.caches.TabListCache
 import org.kvxd.blockgameproxy.core.cache.caches.chunk.ChunkCache
 import org.kvxd.blockgameproxy.core.cache.caches.entity.EntityCache
 
@@ -13,13 +14,15 @@ object CacheSet {
     val Player = PlayerCache
     val Chunk = ChunkCache
     val Entity = EntityCache
+    val TabList = TabListCache
 
     val all = listOf(
         Registry,
         Login,
         Player,
         Chunk,
-        Entity
+        Entity,
+        TabList
     )
 
 }

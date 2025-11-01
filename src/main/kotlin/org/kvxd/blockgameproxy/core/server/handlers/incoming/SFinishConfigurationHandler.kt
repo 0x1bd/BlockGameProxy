@@ -21,19 +21,21 @@ class SFinishConfigurationHandler : IncomingPacketHandler<ServerboundFinishConfi
     ): ServerboundFinishConfigurationPacket {
         session.switchState(ProtocolState.GAME)
 
-        session.send(ClientboundLoginPacket(
-            CacheSet.Login.entityId,
-            false,
-            CacheSet.Chunk.worldNames,
-            20,
-            16,
-            16,
-            false,
-            true,
-            false,
-            CacheSet.Login.spawnInfo,
-            false
-        ))
+        session.send(
+            ClientboundLoginPacket(
+                CacheSet.Login.entityId,
+                false,
+                CacheSet.Chunk.worldNames,
+                20,
+                16,
+                16,
+                false,
+                true,
+                false,
+                CacheSet.Login.spawnInfo,
+                false
+            )
+        )
 
         with(CacheSet.Player) {
             session.send(
@@ -58,14 +60,20 @@ class SFinishConfigurationHandler : IncomingPacketHandler<ServerboundFinishConfi
             session.send(ClientboundChunkBatchFinishedPacket(packets.size))
         }
 
-        session.send(ClientboundGameEventPacket(
-            GameEvent.LEVEL_CHUNKS_LOAD_START, null
-        ))
+        session.send(
+            ClientboundGameEventPacket(
+                GameEvent.LEVEL_CHUNKS_LOAD_START, null
+            )
+        )
 
         with(CacheSet.Entity) {
             val packets = buildSpawnSyncPackets()
 
             packets.forEach(session::send)
+        }
+
+        with(CacheSet.TabList) {
+            sync(session)
         }
 
         return packet
