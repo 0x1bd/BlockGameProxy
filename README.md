@@ -49,6 +49,14 @@ flowchart LR
 
 ---
 
+### Running with debug logs
+
+If you want to see debug information from BGP run it with the `-Dlog.level=DEBUG` argument:
+
+```bash
+java -Dlog.level=DEBUG -jar BlockGameProxy-<version>.jar
+```
+
 ### Building from source (Optional)
 
 If you prefer to build manually:

@@ -12,7 +12,7 @@ object ProxyClient {
     private lateinit var networkClient: ClientNetworkSession
     val protocol = createMinecraftProtocol()
 
-    val LOGGER = LoggerFactory.getLogger("ProxyClient")
+    val LOGGER = LoggerFactory.getLogger(ProxyClient::class.java)
 
     fun initialize() {
         networkClient = ClientNetworkSessionFactory.factory()

@@ -17,10 +17,9 @@ class ProxyServerListener : ServerAdapter() {
     }
 
     override fun sessionAdded(event: SessionAddedEvent) {
-        ProxyServer.LOGGER.info("User connected")
-
         // This can't be in ServerSessionListener because the
         // connectedEvent is never fired
+        // CAUTION: This may also be true in status phase
         currentSession = event.session
 
         event.session.addListener(ServerSessionListener())

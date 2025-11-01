@@ -48,7 +48,6 @@ class ServerSessionListener : SessionAdapter() {
     }
 
     override fun disconnected(event: DisconnectedEvent) {
-        ProxyServer.LOGGER.info("User disconnected: ${event.session.remoteAddress}")
         currentSession = null
     }
 

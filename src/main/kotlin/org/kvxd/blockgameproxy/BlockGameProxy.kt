@@ -5,11 +5,11 @@ import org.kvxd.blockgameproxy.core.handler.PacketHandlerRegistries
 import org.kvxd.blockgameproxy.core.server.ProxyServer
 import org.slf4j.LoggerFactory
 import java.security.KeyPairGenerator
-import java.util.Random
+import java.util.*
 
 object BlockGameProxy {
 
-    val LOGGER = LoggerFactory.getLogger("Main")
+    val LOGGER = LoggerFactory.getLogger(BlockGameProxy::class.java)
 
     val KEY_PAIR = run {
         val gen = KeyPairGenerator.getInstance("RSA")

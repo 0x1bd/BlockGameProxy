@@ -5,7 +5,7 @@ import org.slf4j.LoggerFactory
 
 object Bootstrap {
 
-    private val LOGGER = LoggerFactory.getLogger("Bootstrap")
+    private val LOGGER = LoggerFactory.getLogger(Bootstrap::class.java)
 
     fun main(args: Array<String>) {
         LOGGER.info("Loading configuration")
