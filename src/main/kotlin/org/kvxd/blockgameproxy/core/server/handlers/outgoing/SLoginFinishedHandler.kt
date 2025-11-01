@@ -10,20 +10,18 @@ class SLoginFinishedHandler : OutgoingPacketHandler<ClientboundLoginFinishedPack
     override fun process(
         session: Session, packet: ClientboundLoginFinishedPacket
     ): ClientboundLoginFinishedPacket {
-        synchronized(ProxyServer) {
-            if (ProxyServer.currentSession == null) {
-                ProxyServer.currentSession = session
-                ProxyServer.LOGGER.info("Session ${session.remoteAddress} accepted as currentSession — enabling live forwarding")
-            } else {
-                ProxyServer.LOGGER.warn("Login finished for session ${session.remoteAddress} but someone is already connected; disconnecting")
-                try {
-                    session.disconnect("Proxy already in use")
-                } catch (t: Throwable) {
-                    ProxyServer.LOGGER.warn("Failed to disconnect extra session", t)
-                }
+        if (ProxyServer.currentSession == null) {
+            ProxyServer.currentSession = session
+            ProxyServer.LOGGER.info("User connected: ${session.remoteAddress}")
+        } else {
+            ProxyServer.LOGGER.warn("User attempted to connect: ${session.remoteAddress}")
+            try {
+                session.disconnect("Proxy already in use")
+            } catch (t: Throwable) {
+                ProxyServer.LOGGER.warn("Failed to disconnect user", t)
             }
         }
-
+        
         return packet
     }
 }
