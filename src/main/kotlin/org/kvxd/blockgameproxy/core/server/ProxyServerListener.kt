@@ -15,7 +15,6 @@ class ProxyServerListener : ServerAdapter() {
         ProxyServer.LOGGER.info("Server closed")
     }
 
-    //TODO: Set currentSession only after login game
     override fun sessionAdded(event: SessionAddedEvent) {
         event.session.addListener(ServerSessionListener())
     }
