@@ -4,7 +4,6 @@ import org.geysermc.mcprotocollib.network.event.server.ServerAdapter
 import org.geysermc.mcprotocollib.network.event.server.ServerBoundEvent
 import org.geysermc.mcprotocollib.network.event.server.ServerClosedEvent
 import org.geysermc.mcprotocollib.network.event.server.SessionAddedEvent
-import org.kvxd.blockgameproxy.core.server.ServerSessionListener.Companion.currentSession
 
 class ProxyServerListener : ServerAdapter() {
 
@@ -16,12 +15,8 @@ class ProxyServerListener : ServerAdapter() {
         ProxyServer.LOGGER.info("Server closed")
     }
 
+    //TODO: Set currentSession only after login game
     override fun sessionAdded(event: SessionAddedEvent) {
-        // This can't be in ServerSessionListener because the
-        // connectedEvent is never fired
-        // CAUTION: This may also be true in status phase
-        currentSession = event.session
-
         event.session.addListener(ServerSessionListener())
     }
 

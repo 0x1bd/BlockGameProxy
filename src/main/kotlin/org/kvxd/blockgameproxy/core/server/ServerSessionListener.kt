@@ -2,6 +2,7 @@ package org.kvxd.blockgameproxy.core.server
 
 import org.geysermc.mcprotocollib.network.Session
 import org.geysermc.mcprotocollib.network.event.session.DisconnectedEvent
+import org.geysermc.mcprotocollib.network.event.session.PacketErrorEvent
 import org.geysermc.mcprotocollib.network.event.session.PacketSendingEvent
 import org.geysermc.mcprotocollib.network.event.session.SessionAdapter
 import org.geysermc.mcprotocollib.network.packet.Packet
@@ -12,13 +13,8 @@ import org.kvxd.blockgameproxy.core.handler.PacketHandlerRegistries
 
 class ServerSessionListener : SessionAdapter() {
 
-    companion object {
-
-        var currentSession: Session? = null
-    }
-
     override fun packetReceived(session: Session, packet: Packet) {
-        ProxyClient.LOGGER.debug("Packet received: {}", packet)
+        ProxyServer.LOGGER.debug("Packet received: {} from: {}", packet, session.remoteAddress)
 
         val handler = PacketHandlerRegistries.SERVER
             .getIncoming(packet::class)
@@ -33,13 +29,15 @@ class ServerSessionListener : SessionAdapter() {
     }
 
     override fun packetSent(session: Session, packet: Packet) {
-        ProxyClient.LOGGER.debug("Packet sent: {}", packet)
+        ProxyServer.LOGGER.debug("Packet sent: {}", packet)
 
         PacketHandlerRegistries.SERVER
             .getPostOutgoing(packet::class)?.process(session, packet)
     }
 
     override fun packetSending(event: PacketSendingEvent) {
+        ProxyServer.LOGGER.debug("Packet sending: {}", event.packet)
+
         val packet = event.packet
         val session = event.session
 
@@ -47,8 +45,19 @@ class ServerSessionListener : SessionAdapter() {
             .getOutgoing(packet::class)?.process(session, packet)
     }
 
-    override fun disconnected(event: DisconnectedEvent) {
-        currentSession = null
+    override fun packetError(event: PacketErrorEvent) {
+        ProxyServer.LOGGER.error("Packet Error: ${event.cause.message}")
+        event.cause.printStackTrace()
     }
 
+    override fun disconnected(event: DisconnectedEvent) {
+        println("Disconnected session is ${event.session.remoteAddress}")
+        println("Current session is ${ProxyServer.currentSession?.remoteAddress}")
+
+        println("Comparison: ${event.session == ProxyServer.currentSession}")
+
+        if (event.session == ProxyServer.currentSession) {
+            ProxyServer.currentSession = null
+        }
+    }
 }

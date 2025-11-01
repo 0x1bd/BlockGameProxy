@@ -3,6 +3,7 @@ package org.kvxd.blockgameproxy.core.handler
 import org.kvxd.blockgameproxy.core.client.handlers.incoming.CBlockUpdateHandler
 import org.kvxd.blockgameproxy.core.client.handlers.incoming.CCLoginHandler
 import org.kvxd.blockgameproxy.core.client.handlers.incoming.CChunkHandler
+import org.kvxd.blockgameproxy.core.client.handlers.incoming.CCommandsHandler
 import org.kvxd.blockgameproxy.core.client.handlers.incoming.CEntityHandlers.registerEntityHandlers
 import org.kvxd.blockgameproxy.core.client.handlers.incoming.CFinishConfigurationHandler
 import org.kvxd.blockgameproxy.core.client.handlers.incoming.CKeepAliveHandler
@@ -26,6 +27,7 @@ import org.kvxd.blockgameproxy.core.server.handlers.incoming.SMovePlayerPosHandl
 import org.kvxd.blockgameproxy.core.server.handlers.incoming.SMovePlayerPosRotHandler
 import org.kvxd.blockgameproxy.core.server.handlers.incoming.SPingHandler
 import org.kvxd.blockgameproxy.core.server.handlers.incoming.SStatusHandler
+import org.kvxd.blockgameproxy.core.server.handlers.outgoing.SLoginFinishedHandler
 import org.slf4j.LoggerFactory
 
 object PacketHandlerRegistries {
@@ -41,12 +43,14 @@ object PacketHandlerRegistries {
         CLIENT.registerClientIncoming()
         CLIENT.registerClientOutgoing()
         SERVER.registerServerIncoming()
+        SERVER.registerServerOutgoing()
     }
 
     private fun PacketHandlerRegistry.registerClientIncoming() {
         registerIncoming(CBlockUpdateHandler())
         registerIncoming(CChunkHandler())
         registerIncoming(CCLoginHandler())
+        registerIncoming(CCommandsHandler())
         registerEntityHandlers()
         registerIncoming(CFinishConfigurationHandler())
         registerIncoming(CKeepAliveHandler())
@@ -77,5 +81,9 @@ object PacketHandlerRegistries {
         registerIncoming(SMovePlayerPosRotHandler())
         registerIncoming(SPingHandler())
         registerIncoming(SStatusHandler())
+    }
+
+    private fun PacketHandlerRegistry.registerServerOutgoing() {
+        registerOutgoing(SLoginFinishedHandler())
     }
 }

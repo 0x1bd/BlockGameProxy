@@ -13,7 +13,7 @@ import org.geysermc.mcprotocollib.protocol.packet.handshake.serverbound.ClientIn
 import org.geysermc.mcprotocollib.protocol.packet.login.serverbound.ServerboundHelloPacket
 import org.kvxd.blockgameproxy.config.config
 import org.kvxd.blockgameproxy.core.handler.PacketHandlerRegistries
-import org.kvxd.blockgameproxy.core.server.ServerSessionListener
+import org.kvxd.blockgameproxy.core.server.ProxyServer
 import org.kvxd.blockgameproxy.core.switchState
 import java.util.*
 
@@ -48,8 +48,8 @@ class ProxyClientListener : SessionAdapter() {
 
         val processedPacket = handler?.process(session, packet) ?: packet
 
-        if (shouldForward && ServerSessionListener.currentSession != null) {
-            ServerSessionListener.currentSession?.send(processedPacket)
+        if (shouldForward && ProxyServer.currentSession != null) {
+            ProxyServer.currentSession?.send(processedPacket)
         }
     }
 
@@ -69,6 +69,7 @@ class ProxyClientListener : SessionAdapter() {
     }
 
     override fun packetError(event: PacketErrorEvent) {
+        ProxyClient.LOGGER.error("Packet Error: ${event.cause.message}")
         event.cause.printStackTrace()
     }
 

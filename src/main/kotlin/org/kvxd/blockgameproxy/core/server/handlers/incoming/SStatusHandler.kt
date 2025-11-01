@@ -16,10 +16,10 @@ class SStatusHandler : IncomingPacketHandler<ServerboundStatusRequestPacket> {
     companion object {
 
         val statusInfo = ServerStatusInfo(
-            Component.text("Blockgame Proxy").appendNewline()
+            Component.text("Blockgame Proxy | ${ProxyServer.currentSession}").appendNewline()
                 .append(Component.text("@${config.targetServer.host}:${config.targetServer.port}")),
-            PlayerInfo(0, 0, emptyList()),
-            VersionInfo(ProxyServer.getCodec().minecraftVersion, ProxyServer.getCodec().protocolVersion),
+            PlayerInfo(1, 0, emptyList()),
+            VersionInfo(ProxyServer.codec.minecraftVersion, ProxyServer.codec.protocolVersion),
             byteArrayOf(),
             false
         )

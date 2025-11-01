@@ -1,7 +1,7 @@
 package org.kvxd.blockgameproxy.core.server
 
+import org.geysermc.mcprotocollib.network.Session
 import org.geysermc.mcprotocollib.network.server.NetworkServer
-import org.geysermc.mcprotocollib.protocol.MinecraftProtocol
 import org.geysermc.mcprotocollib.protocol.codec.PacketCodec
 import org.kvxd.blockgameproxy.config.config
 import org.kvxd.blockgameproxy.core.createMinecraftProtocol
@@ -9,18 +9,26 @@ import org.kvxd.blockgameproxy.core.server.tick.TickSystem
 import org.kvxd.blockgameproxy.core.server.tick.tasks.KeepAliveTask
 import org.slf4j.LoggerFactory
 import java.net.InetSocketAddress
+import java.util.concurrent.atomic.AtomicReference
 
 object ProxyServer {
 
     private val protocol = createMinecraftProtocol()
 
-    fun getCodec(): PacketCodec = protocol.codec
+    val codec: PacketCodec
+        get() = protocol.codec
 
-    private val networkServer = NetworkServer(InetSocketAddress(config.bindPort), ::protocol)
+    private val networkServer: NetworkServer by lazy {
+        NetworkServer(InetSocketAddress(config.bindPort)) { protocol }
+    }
+
+    private val currentSessionRef = AtomicReference<Session?>(null)
+
+    var currentSession: Session?
+        get() = currentSessionRef.get()
+        set(value) = currentSessionRef.set(value)
 
     val LOGGER = LoggerFactory.getLogger(ProxyServer::class.java)
-
-    val NETWORK_CODEC = MinecraftProtocol.loadNetworkCodec()
 
     fun start() {
         networkServer.addListener(ProxyServerListener())
@@ -35,7 +43,11 @@ object ProxyServer {
     fun stop() {
         TickSystem.stop()
 
-        networkServer.close()
+        runCatching {
+            networkServer.close()
+        }.onFailure { t ->
+            LOGGER.warn("Error while closing network server", t)
+        }
     }
 
 }

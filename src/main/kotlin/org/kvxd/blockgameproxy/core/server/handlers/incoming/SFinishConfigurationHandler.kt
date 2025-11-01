@@ -7,9 +7,9 @@ import org.geysermc.mcprotocollib.protocol.packet.configuration.serverbound.Serv
 import org.geysermc.mcprotocollib.protocol.packet.ingame.clientbound.ClientboundLoginPacket
 import org.geysermc.mcprotocollib.protocol.packet.ingame.clientbound.entity.player.ClientboundPlayerPositionPacket
 import org.geysermc.mcprotocollib.protocol.packet.ingame.clientbound.level.ClientboundGameEventPacket
+import org.kvxd.blockgameproxy.core.cache.caches.CommandCache
 import org.kvxd.blockgameproxy.core.cache.caches.LoginCache
 import org.kvxd.blockgameproxy.core.cache.caches.PlayerCache
-import org.kvxd.blockgameproxy.core.cache.caches.TabListCache
 import org.kvxd.blockgameproxy.core.cache.caches.chunk.ChunkCache
 import org.kvxd.blockgameproxy.core.cache.caches.entity.EntityCache
 import org.kvxd.blockgameproxy.core.handler.IncomingPacketHandler
@@ -62,7 +62,7 @@ class SFinishConfigurationHandler : IncomingPacketHandler<ServerboundFinishConfi
 
         EntityCache.sync(session)
 
-        TabListCache.sync(session)
+        CommandCache.sync(session)
 
         return packet
     }
