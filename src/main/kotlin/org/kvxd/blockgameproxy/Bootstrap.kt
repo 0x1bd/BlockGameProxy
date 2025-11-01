@@ -13,7 +13,13 @@ object Bootstrap {
         ConfigManager.loadConfig()
         LOGGER.debug("Configuration loaded: {}", ConfigManager.config)
 
-        BlockGameProxy.initialize()
+        if (ConfigManager.firstRun) {
+            BlockGameProxy.LOGGER.info("First run detected; Cancelling initialization")
+            BlockGameProxy.LOGGER.info("Config file was created")
+            return
+        } else {
+            BlockGameProxy.initialize()
+        }
 
         Runtime.getRuntime().addShutdownHook(Thread {
             LOGGER.info("Shutdown initiated")

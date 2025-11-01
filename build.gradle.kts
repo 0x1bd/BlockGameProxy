@@ -20,7 +20,7 @@ repositories {
 dependencies {
     implementation("org.geysermc.mcprotocollib:protocol:1.21.4-SNAPSHOT")
     implementation("ch.qos.logback:logback-classic:1.5.19")
-    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.9.0")
+    implementation("com.charleskorn.kaml:kaml:0.102.0")
 
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.10.2")
 

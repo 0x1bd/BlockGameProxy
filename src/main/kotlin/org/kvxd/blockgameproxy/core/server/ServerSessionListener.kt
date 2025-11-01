@@ -13,11 +13,12 @@ import org.kvxd.blockgameproxy.core.handler.PacketHandlerRegistries
 class ServerSessionListener : SessionAdapter() {
 
     companion object {
+
         var currentSession: Session? = null
     }
 
     override fun packetReceived(session: Session, packet: Packet) {
-        ProxyServer.LOGGER.info("rec: $packet")
+        ProxyClient.LOGGER.debug("Packet received: {}", packet)
 
         val handler = PacketHandlerRegistries.SERVER
             .getIncoming(packet::class)
@@ -27,22 +28,18 @@ class ServerSessionListener : SessionAdapter() {
         val processedPacket = handler?.process(session, packet) ?: packet
 
         if (shouldForward && session.getState() == ProtocolState.GAME) {
-            println("FORWARDING PACKET TO TARGET SERVER: ${processedPacket.javaClass.simpleName}")
-
             ProxyClient.send(processedPacket)
         }
     }
 
     override fun packetSent(session: Session, packet: Packet) {
-        ProxyServer.LOGGER.info("sent: $packet")
+        ProxyClient.LOGGER.debug("Packet sent: {}", packet)
 
         PacketHandlerRegistries.SERVER
             .getPostOutgoing(packet::class)?.process(session, packet)
     }
 
     override fun packetSending(event: PacketSendingEvent) {
-        ProxyServer.LOGGER.info("sending: ${event.packet.javaClass.simpleName}")
-
         val packet = event.packet
         val session = event.session
 
@@ -51,7 +48,7 @@ class ServerSessionListener : SessionAdapter() {
     }
 
     override fun disconnected(event: DisconnectedEvent) {
-        println("User disconnect")
+        ProxyServer.LOGGER.info("User disconnected: ${event.session.remoteAddress}")
         currentSession = null
     }
 

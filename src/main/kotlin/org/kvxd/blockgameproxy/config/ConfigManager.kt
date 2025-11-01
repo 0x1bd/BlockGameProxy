@@ -1,32 +1,34 @@
 package org.kvxd.blockgameproxy.config
 
-import kotlinx.serialization.json.Json
+import com.charleskorn.kaml.Yaml
+import kotlinx.serialization.decodeFromString
+import kotlinx.serialization.encodeToString
 import java.io.File
 
 object ConfigManager {
 
-    private val json = Json {
-        prettyPrint = true
-        encodeDefaults = true
-    }
-
-    val CONFIG_FILE = File("./config.json")
+    val CONFIG_FILE = File("./config.yml")
 
     var config: Config = Config()
         private set
 
+    var firstRun: Boolean = false
+        private set
+
     fun loadConfig() {
-        if (CONFIG_FILE.exists()) {
+        val existedBefore = CONFIG_FILE.exists()
+        firstRun = !existedBefore
+
+        if (existedBefore) {
             val text = CONFIG_FILE.readText()
-            config = json.decodeFromString(text)
+            config = Yaml.default.decodeFromString(text)
         } else {
-            CONFIG_FILE.createNewFile()
             saveConfig()
         }
     }
 
     fun saveConfig() {
-        val text = json.encodeToString(config)
+        val text = Yaml.default.encodeToString(config)
         CONFIG_FILE.writeText(text)
     }
 }

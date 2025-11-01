@@ -1,8 +1,5 @@
 package org.kvxd.blockgameproxy.core.client
 
-import org.kvxd.blockgameproxy.config.config
-import org.kvxd.blockgameproxy.core.handler.PacketHandlerRegistries
-import org.kvxd.blockgameproxy.core.switchState
 import org.geysermc.mcprotocollib.network.Session
 import org.geysermc.mcprotocollib.network.event.session.ConnectedEvent
 import org.geysermc.mcprotocollib.network.event.session.DisconnectedEvent
@@ -14,9 +11,11 @@ import org.geysermc.mcprotocollib.protocol.data.ProtocolState
 import org.geysermc.mcprotocollib.protocol.data.handshake.HandshakeIntent
 import org.geysermc.mcprotocollib.protocol.packet.handshake.serverbound.ClientIntentionPacket
 import org.geysermc.mcprotocollib.protocol.packet.login.serverbound.ServerboundHelloPacket
-import org.kvxd.blockgameproxy.core.getState
+import org.kvxd.blockgameproxy.config.config
+import org.kvxd.blockgameproxy.core.handler.PacketHandlerRegistries
 import org.kvxd.blockgameproxy.core.server.ServerSessionListener
-import java.util.UUID
+import org.kvxd.blockgameproxy.core.switchState
+import java.util.*
 
 class ProxyClientListener : SessionAdapter() {
 
@@ -27,8 +26,8 @@ class ProxyClientListener : SessionAdapter() {
             send(
                 ClientIntentionPacket(
                     ProxyClient.protocol.codec.protocolVersion,
-                    config.targetServerHost,
-                    config.targetServerPort,
+                    config.targetServer.host,
+                    config.targetServer.port,
                     HandshakeIntent.LOGIN
                 )
             )
@@ -40,7 +39,7 @@ class ProxyClientListener : SessionAdapter() {
     }
 
     override fun packetReceived(session: Session, packet: Packet) {
-        ProxyClient.LOGGER.debug("Packet received: $packet")
+        ProxyClient.LOGGER.debug("Packet received: {}", packet)
 
         val handler = PacketHandlerRegistries.CLIENT
             .getIncoming(packet::class)
@@ -50,22 +49,18 @@ class ProxyClientListener : SessionAdapter() {
         val processedPacket = handler?.process(session, packet) ?: packet
 
         if (shouldForward && ServerSessionListener.currentSession != null) {
-            println("FORWARDING PACKET TO TARGET USER: ${processedPacket.javaClass.simpleName}")
-
             ServerSessionListener.currentSession?.send(processedPacket)
         }
     }
 
     override fun packetSent(session: Session, packet: Packet) {
-        ProxyClient.LOGGER.debug("Packet sent: $packet")
+        ProxyClient.LOGGER.debug("Packet sent: {}", packet)
 
         PacketHandlerRegistries.CLIENT
             .getPostOutgoing(packet::class)?.process(session, packet)
     }
 
     override fun packetSending(event: PacketSendingEvent) {
-        ProxyClient.LOGGER.debug("Packet sending: $event")
-
         val packet = event.packet
         val session = event.session
 

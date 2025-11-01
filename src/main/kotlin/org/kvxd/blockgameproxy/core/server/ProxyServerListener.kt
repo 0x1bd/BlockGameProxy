@@ -4,8 +4,6 @@ import org.geysermc.mcprotocollib.network.event.server.ServerAdapter
 import org.geysermc.mcprotocollib.network.event.server.ServerBoundEvent
 import org.geysermc.mcprotocollib.network.event.server.ServerClosedEvent
 import org.geysermc.mcprotocollib.network.event.server.SessionAddedEvent
-import org.kvxd.blockgameproxy.BlockGameProxy
-import org.kvxd.blockgameproxy.core.ControlParty
 import org.kvxd.blockgameproxy.core.server.ServerSessionListener.Companion.currentSession
 
 class ProxyServerListener : ServerAdapter() {
@@ -19,8 +17,10 @@ class ProxyServerListener : ServerAdapter() {
     }
 
     override fun sessionAdded(event: SessionAddedEvent) {
-        ProxyServer.LOGGER.info("Server Session established")
+        ProxyServer.LOGGER.info("User connected")
 
+        // This can't be in ServerSessionListener because the
+        // connectedEvent is never fired
         currentSession = event.session
 
         event.session.addListener(ServerSessionListener())

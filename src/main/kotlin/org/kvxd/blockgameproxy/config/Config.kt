@@ -5,12 +5,15 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class Config(
     val bindPort: Int = 25566,
-    val targetServerHost: String = "0.0.0.0",
-    val targetServerPort: Int = 25565,
+    val targetServer: TargetServer = TargetServer(),
 
-    val profileName: String = "BlockGameProxy",
+    val profileName: String = "BlockGameProxy"
+)
 
-    val serverId: String? = null
+@Serializable
+data class TargetServer(
+    var host: String = "0.0.0.0",
+    var port: Int = 25565
 )
 
 val config: Config
