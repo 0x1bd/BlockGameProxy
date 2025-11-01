@@ -8,7 +8,7 @@ import org.kvxd.blockgameproxy.core.handler.IncomingPacketHandler
 
 class SHelloHandler : IncomingPacketHandler<ServerboundHelloPacket> {
 
-    override fun handle(session: Session, packet: ServerboundHelloPacket): ServerboundHelloPacket {
+    override fun process(session: Session, packet: ServerboundHelloPacket): ServerboundHelloPacket {
         session.send(ClientboundHelloPacket(
             "",
             BlockGameProxy.KEY_PAIR.public,
@@ -18,5 +18,7 @@ class SHelloHandler : IncomingPacketHandler<ServerboundHelloPacket> {
 
         return packet
     }
+
+    override val shouldForward: Boolean = false
 
 }

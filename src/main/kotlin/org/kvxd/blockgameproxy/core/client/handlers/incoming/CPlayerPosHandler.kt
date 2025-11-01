@@ -2,18 +2,18 @@ package org.kvxd.blockgameproxy.core.client.handlers.incoming
 
 import org.geysermc.mcprotocollib.network.Session
 import org.geysermc.mcprotocollib.protocol.packet.ingame.clientbound.entity.player.ClientboundPlayerPositionPacket
-import org.kvxd.blockgameproxy.core.cache.Cache
+import org.kvxd.blockgameproxy.core.cache.CacheSet
 import org.kvxd.blockgameproxy.core.handler.IncomingPacketHandler
 
 class CPlayerPosHandler : IncomingPacketHandler<ClientboundPlayerPositionPacket> {
 
-    override fun handle(session: Session, packet: ClientboundPlayerPositionPacket): ClientboundPlayerPositionPacket {
-        with(Cache.PLAYER.position) {
+    override fun process(session: Session, packet: ClientboundPlayerPositionPacket): ClientboundPlayerPositionPacket {
+        with(CacheSet.Player) {
             position = packet.position
-            delta = packet.deltaMovement
+            positionDelta = packet.deltaMovement
             yaw = packet.yRot
             pitch = packet.xRot
-            flags = packet.relatives
+            positionFlags = packet.relatives
         }
 
         return packet

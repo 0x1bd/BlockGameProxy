@@ -6,14 +6,15 @@ import org.geysermc.mcprotocollib.protocol.packet.login.clientbound.ClientboundL
 import org.geysermc.mcprotocollib.protocol.packet.login.clientbound.ClientboundLoginFinishedPacket
 import org.geysermc.mcprotocollib.protocol.packet.login.serverbound.ServerboundKeyPacket
 import org.kvxd.blockgameproxy.BlockGameProxy
-import org.kvxd.blockgameproxy.core.cache.Cache
+import org.kvxd.blockgameproxy.config.config
 import org.kvxd.blockgameproxy.core.createEncryption
 import org.kvxd.blockgameproxy.core.handler.IncomingPacketHandler
 import org.kvxd.blockgameproxy.core.setCompressionThreshold
+import java.util.*
 
 class SKeyHandler : IncomingPacketHandler<ServerboundKeyPacket> {
 
-    override fun handle(session: Session, packet: ServerboundKeyPacket): ServerboundKeyPacket {
+    override fun process(session: Session, packet: ServerboundKeyPacket): ServerboundKeyPacket {
         val privateKey = BlockGameProxy.KEY_PAIR.private
 
         check(BlockGameProxy.CHALLENGE.contentEquals(packet.getEncryptedChallenge(privateKey))) { "Protocol error" }
@@ -25,13 +26,17 @@ class SKeyHandler : IncomingPacketHandler<ServerboundKeyPacket> {
         session.setCompressionThreshold(256)
 
         val profile = GameProfile(
-            Cache.PLAYER.uuid,
-            Cache.PLAYER.username
+            UUID.nameUUIDFromBytes(
+                ("OfflinePlayer:" + config.profileName).toByteArray()
+            ),
+            config.profileName
         )
 
         session.send(ClientboundLoginFinishedPacket(profile))
 
         return packet
     }
+
+    override val shouldForward: Boolean = false
 
 }

@@ -9,7 +9,7 @@ import org.geysermc.mcprotocollib.protocol.packet.login.serverbound.ServerboundL
 
 class CLoginFinishedHandler : IncomingPacketHandler<ClientboundLoginFinishedPacket> {
 
-    override fun handle(
+    override fun process(
         session: Session,
         packet: ClientboundLoginFinishedPacket
     ): ClientboundLoginFinishedPacket {
@@ -19,4 +19,7 @@ class CLoginFinishedHandler : IncomingPacketHandler<ClientboundLoginFinishedPack
 
         return packet
     }
+
+    override val shouldForward: Boolean = false
+
 }

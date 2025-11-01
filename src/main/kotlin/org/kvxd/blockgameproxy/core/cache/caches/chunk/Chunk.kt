@@ -20,8 +20,8 @@ class Chunk(
 
         val EMPTY_HEIGHT_MAP = NbtMap.EMPTY
 
-        fun chunkPosToLong(x: Int, z: Int): Long {
-            return (x.toLong() and UINT_MASK) or ((z.toLong() and UINT_MASK) shl 32)
+        fun toLong(x: Int, z: Int): Long {
+            return x.toLong() and UINT_MASK or ((z.toLong() and UINT_MASK) shl 32)
         }
 
         fun longToChunkX(l: Long): Int {
@@ -33,7 +33,7 @@ class Chunk(
         }
     }
 
-    fun getChunkPos() = chunkPosToLong(x, z)
+    fun getChunkPos() = toLong(x, z)
 
     fun getBlockStateId(relativeX: Int, y: Int, relativeZ: Int): Int {
         val section = getChunkSection(y) ?: return 0

@@ -1,21 +1,26 @@
 package org.kvxd.blockgameproxy.core.cache.caches.chunk
 
 import io.netty.buffer.Unpooled
+import net.kyori.adventure.key.Key
 import org.geysermc.mcprotocollib.protocol.codec.MinecraftTypes
 import org.geysermc.mcprotocollib.protocol.data.game.chunk.ChunkSection
 import org.geysermc.mcprotocollib.protocol.data.game.level.LightUpdateData
 import org.geysermc.mcprotocollib.protocol.packet.ingame.clientbound.level.ClientboundBlockUpdatePacket
 import org.geysermc.mcprotocollib.protocol.packet.ingame.clientbound.level.ClientboundLevelChunkWithLightPacket
+import org.geysermc.mcprotocollib.protocol.packet.ingame.clientbound.level.ClientboundLightUpdatePacket
 import org.geysermc.mcprotocollib.protocol.packet.ingame.clientbound.level.ClientboundSectionBlocksUpdatePacket
+import org.kvxd.blockgameproxy.core.cache.Cache
 import java.util.concurrent.ConcurrentHashMap
 
-class ChunkCache {
+object ChunkCache : Cache() {
 
     // key = chunkPos
-    private val chunks = ConcurrentHashMap<Long, Chunk>()
+    private val chunks by resettableWithDefault(ConcurrentHashMap<Long, Chunk>())
+
+    var worldNames by resettableWithDefault(arrayOf(Key.key("overworld"), Key.key("the_nether"), Key.key("the_end")))
 
     fun handleChunkPacket(packet: ClientboundLevelChunkWithLightPacket) {
-        val chunkPos = Chunk.chunkPosToLong(packet.x, packet.z)
+        val chunkPos = Chunk.toLong(packet.x, packet.z)
         val sections = decodeSections(packet.chunkData)
 
         val chunk = Chunk(
@@ -43,15 +48,15 @@ class ChunkCache {
         }
     }
 
-    fun handleLightUpdate(x: Int, z: Int, lightData: LightUpdateData) {
-        val chunk = chunks[Chunk.chunkPosToLong(x, z)] ?: return
-        chunk.lightUpdateData = lightData
+    fun handleLightUpdatePacket(packet: ClientboundLightUpdatePacket) {
+        val chunk = chunks[Chunk.toLong(packet.x, packet.z)] ?: return
+        chunk.lightUpdateData = packet.lightData
     }
 
     fun setBlockState(x: Int, y: Int, z: Int, blockStateId: Int) {
         val chunkX = x shr 4
         val chunkZ = z shr 4
-        val chunkPos = Chunk.chunkPosToLong(chunkX, chunkZ)
+        val chunkPos = Chunk.toLong(chunkX, chunkZ)
 
         val chunk = chunks[chunkPos] ?: return
         val section = chunk.getChunkSection(y) ?: return
@@ -63,38 +68,42 @@ class ChunkCache {
         val chunkX = x shr 4
         val chunkZ = z shr 4
 
-        val chunk = chunks[Chunk.chunkPosToLong(chunkX, chunkZ)] ?: return 0
+        val chunk = chunks[Chunk.toLong(chunkX, chunkZ)] ?: return 0
         return chunk.getBlockStateId(x and 15, y, z and 15)
     }
 
     fun applyLightUpdate(x: Int, z: Int, lightData: LightUpdateData) {
-        val chunk = chunks[Chunk.chunkPosToLong(x, z)] ?: return
+        val chunk = chunks[Chunk.toLong(x, z)] ?: return
         chunk.lightUpdateData = lightData
     }
 
     fun getChunk(x: Int, z: Int): Chunk? =
-        chunks[Chunk.chunkPosToLong(x, z)]
+        chunks[Chunk.toLong(x, z)]
 
     fun unloadChunk(x: Int, z: Int) {
-        chunks.remove(Chunk.chunkPosToLong(x, z))
+        chunks.remove(Chunk.toLong(x, z))
     }
 
     fun buildChunkSyncPackets(): List<ClientboundLevelChunkWithLightPacket> {
         return chunks.values.map { chunk ->
             val buf = Unpooled.buffer()
-            chunk.sections.forEach { MinecraftTypes.writeChunkSection(buf, it) }
 
-            val chunkData = ByteArray(buf.readableBytes())
-            buf.readBytes(chunkData)
+            chunk.sections.forEach { section ->
+                MinecraftTypes.writeChunkSection(buf, section)
+            }
+
+            val data = ByteArray(buf.readableBytes())
+            buf.readBytes(data)
             buf.release()
 
             ClientboundLevelChunkWithLightPacket(
                 chunk.x,
                 chunk.z,
-                chunkData,
+                data,
                 Chunk.EMPTY_HEIGHT_MAP,
                 chunk.blockEntities.toTypedArray(),
-                chunk.lightUpdateData!!
+                chunk.lightUpdateData
+                    ?: throw IllegalStateException("Light data is null for chunk ${chunk.x}, ${chunk.z}")
             )
         }
     }
@@ -102,18 +111,27 @@ class ChunkCache {
     private fun decodeSections(chunkData: ByteArray): List<ChunkSection> {
         val buf = Unpooled.wrappedBuffer(chunkData)
         val sections = mutableListOf<ChunkSection>()
+        val sectionCount = 24
 
-        while (buf.isReadable) {
-            try {
-                sections.add(MinecraftTypes.readChunkSection(buf))
-            } catch (_: Exception) {
-                // Stop reading if malformed or incomplete section
-                break
+        try {
+            for (i in 0 until sectionCount) {
+                if (buf.isReadable) {
+                    sections.add(MinecraftTypes.readChunkSection(buf))
+                } else {
+                    sections.add(createEmptySection())
+                }
             }
+        } catch (e: Exception) {
+            while (sections.size < sectionCount) {
+                sections.add(createEmptySection())
+            }
+        } finally {
+            buf.release()
         }
 
-        buf.release()
         return sections
     }
+
+    private fun createEmptySection(): ChunkSection = ChunkSection()
 
 }

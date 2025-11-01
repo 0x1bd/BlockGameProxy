@@ -7,7 +7,7 @@ import org.geysermc.mcprotocollib.protocol.packet.login.clientbound.ClientboundL
 
 class CLoginCompressionHandler : IncomingPacketHandler<ClientboundLoginCompressionPacket> {
 
-    override fun handle(
+    override fun process(
         session: Session,
         packet: ClientboundLoginCompressionPacket
     ): ClientboundLoginCompressionPacket {
@@ -15,4 +15,6 @@ class CLoginCompressionHandler : IncomingPacketHandler<ClientboundLoginCompressi
 
         return packet
     }
+
+    override val shouldForward: Boolean = false
 }

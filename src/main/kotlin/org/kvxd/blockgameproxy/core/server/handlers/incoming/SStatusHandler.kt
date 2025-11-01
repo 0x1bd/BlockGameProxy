@@ -25,10 +25,12 @@ class SStatusHandler : IncomingPacketHandler<ServerboundStatusRequestPacket> {
         )
     }
 
-    override fun handle(session: Session, packet: ServerboundStatusRequestPacket): ServerboundStatusRequestPacket {
+    override fun process(session: Session, packet: ServerboundStatusRequestPacket): ServerboundStatusRequestPacket {
         session.send(ClientboundStatusResponsePacket(statusInfo))
 
         return packet
     }
+
+    override val shouldForward: Boolean = false
 
 }

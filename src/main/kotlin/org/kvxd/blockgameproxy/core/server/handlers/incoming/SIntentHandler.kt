@@ -8,12 +8,14 @@ import org.kvxd.blockgameproxy.core.toProtocolState
 
 class SIntentHandler : IncomingPacketHandler<ClientIntentionPacket> {
 
-    override fun handle(session: Session, packet: ClientIntentionPacket): ClientIntentionPacket {
+    override fun process(session: Session, packet: ClientIntentionPacket): ClientIntentionPacket {
         val state = packet.intent.toProtocolState()
 
         session.switchState(state)
 
         return packet
     }
+
+    override val shouldForward: Boolean = false
 
 }

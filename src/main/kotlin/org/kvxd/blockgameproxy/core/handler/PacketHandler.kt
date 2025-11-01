@@ -5,7 +5,11 @@ import org.geysermc.mcprotocollib.network.packet.Packet
 
 interface PacketHandler<T : Packet> {
 
-    fun handle(session: Session, packet: T): T
+    fun process(session: Session, packet: T): T
+
+    val shouldForward: Boolean
+        get() = true
+
 }
 
 interface IncomingPacketHandler<T : Packet> : PacketHandler<T>

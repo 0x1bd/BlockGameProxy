@@ -1,7 +1,6 @@
 package org.kvxd.blockgameproxy.core.handler
 
 import org.kvxd.blockgameproxy.core.client.handlers.incoming.*
-import org.kvxd.blockgameproxy.core.client.handlers.outgoing.CHelloHandler
 import org.kvxd.blockgameproxy.core.server.handlers.incoming.*
 import org.slf4j.LoggerFactory
 
@@ -23,24 +22,19 @@ object PacketHandlerRegistries {
     private fun PacketHandlerRegistry.registerClientIncoming() {
         registerIncoming(CChunkHandler())
         registerIncoming(CCLoginHandler())
-        registerIncoming(CCommandsHandler())
         registerIncoming(CFinishConfigurationHandler())
-        registerIncoming(CKeepAliveHandler())
+        registerIncoming(CLightHandler())
         registerIncoming(CLoginCompressionHandler())
         registerIncoming(CLoginFinishedHandler())
         registerIncoming(CPlayerAbilitiesHandler())
         registerIncoming(CPlayerPosHandler())
         registerIncoming(CRegistryDataHandler())
         registerIncoming(CSelectKnownPacks())
-        registerIncoming(CSetExperienceHandler())
-        registerIncoming(CSetHealthHandler())
-        registerIncoming(CSetHeldSlotHandler())
-        registerIncoming(CSetTimeHandler())
         registerIncoming(CUpdateTagsHandler())
     }
 
     private fun PacketHandlerRegistry.registerClientOutgoing() {
-        registerOutgoing(CHelloHandler())
+
     }
 
     private fun PacketHandlerRegistry.registerServerIncoming() {

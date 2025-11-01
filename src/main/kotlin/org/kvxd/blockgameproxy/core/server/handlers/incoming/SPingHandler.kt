@@ -7,10 +7,12 @@ import org.kvxd.blockgameproxy.core.handler.IncomingPacketHandler
 
 class SPingHandler : IncomingPacketHandler<ServerboundPingRequestPacket> {
 
-    override fun handle(session: Session, packet: ServerboundPingRequestPacket): ServerboundPingRequestPacket {
+    override fun process(session: Session, packet: ServerboundPingRequestPacket): ServerboundPingRequestPacket {
         session.send(ClientboundPongResponsePacket(packet.pingTime))
 
         return packet
     }
+
+    override val shouldForward: Boolean = false
 
 }

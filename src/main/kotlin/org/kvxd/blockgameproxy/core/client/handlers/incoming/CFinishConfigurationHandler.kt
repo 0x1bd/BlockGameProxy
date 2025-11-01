@@ -9,7 +9,7 @@ import org.geysermc.mcprotocollib.protocol.packet.configuration.serverbound.Serv
 
 class CFinishConfigurationHandler : IncomingPacketHandler<ClientboundFinishConfigurationPacket> {
 
-    override fun handle(
+    override fun process(
         session: Session,
         packet: ClientboundFinishConfigurationPacket
     ): ClientboundFinishConfigurationPacket {
@@ -18,4 +18,6 @@ class CFinishConfigurationHandler : IncomingPacketHandler<ClientboundFinishConfi
 
         return packet
     }
+
+    override val shouldForward: Boolean = false
 }

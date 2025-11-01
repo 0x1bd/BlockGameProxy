@@ -2,38 +2,24 @@ package org.kvxd.blockgameproxy.core.cache.caches
 
 import org.cloudburstmc.math.vector.Vector3d
 import org.geysermc.mcprotocollib.protocol.data.game.entity.player.PositionElement
-import java.util.*
+import org.kvxd.blockgameproxy.core.cache.Cache
+import org.kvxd.blockgameproxy.core.cache.ResetCondition
 
-class PlayerCache(
-    var username: String = "Steve",
-    var uuid: UUID = offlineUUID(username),
-    var heldSlot: Int = 0,
-    val abilities: Abilities = Abilities(),
-    val position: Position = Position(),
-    var health: Float = 20f,
-    var food: Int = 20,
-    var saturation: Float = 5f,
-    var exp: Float = 0f,
-    var expLevel: Int = 0,
-    var totalExp: Int = 0
-)
+object PlayerCache : Cache() {
 
-data class Abilities(
-    var invincible: Boolean = false,
-    var canFly: Boolean = false,
-    var flying: Boolean = false,
-    var creative: Boolean = false,
-    var flySpeed: Float = 0f,
-    var walkSpeed: Float = 0f
-)
+    var isInvincible by resettableWithDefault(false)
+    var canFly by resettableWithDefault(false)
+    var flying by resettableWithDefault(false)
+    var inCreative by resettableWithDefault(false)
+    var flySpeed by resettableWithDefault(0f)
+    var walkSpeed by resettableWithDefault(0f)
 
-data class Position(
-    var position: Vector3d = Vector3d.from(0.0),
-    var delta: Vector3d = Vector3d.from(0.0),
-    var yaw: Float = 0f,
-    var pitch: Float = 0f,
-    var flags: List<PositionElement> = emptyList()
-)
+    var position by resettableWithDefault(Vector3d.ZERO)
+    var positionDelta by resettableWithDefault(Vector3d.ZERO)
+    var yaw by resettableWithDefault(0f)
+    var pitch by resettableWithDefault(0f)
+    var positionFlags by resettableWithDefault(emptyList<PositionElement>())
 
-fun offlineUUID(username: String): UUID =
-    UUID.nameUUIDFromBytes(("OfflinePlayer:$username").toByteArray())
+    override val resetCondition: ResetCondition = ResetCondition.Disconnect
+
+}

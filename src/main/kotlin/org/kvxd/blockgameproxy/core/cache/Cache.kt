@@ -1,15 +1,29 @@
 package org.kvxd.blockgameproxy.core.cache
 
-import org.kvxd.blockgameproxy.core.cache.caches.*
-import org.kvxd.blockgameproxy.core.cache.caches.chunk.ChunkCache
+abstract class Cache {
 
-object Cache {
+    private val resettables = mutableListOf<() -> Unit>()
 
-    val COMMAND = CommandCache()
-    val PLAYER = PlayerCache()
-    val LOGIN = LoginCache()
-    val REGISTRY = RegistryCache()
-    val CHUNK = ChunkCache()
-    val WORLD = WorldCache()
+    fun <T> resettable(initialValue: T): Resettable<T> {
+        return Resettable(initialValue).also { delegate ->
+            resettables.add { delegate.reset() }
+        }
+    }
+
+    fun <T> resettableWithDefault(initialValue: T): ResettableWithDefault<T> {
+        return ResettableWithDefault(initialValue).also { delegate ->
+            resettables.add { delegate.reset() }
+        }
+    }
+
+    fun populate(data: (Cache) -> Unit) {
+        data(this)
+    }
+
+    open fun reset() {
+        resettables.forEach { it() }
+    }
+
+    open val resetCondition: ResetCondition = ResetCondition.Never
 
 }

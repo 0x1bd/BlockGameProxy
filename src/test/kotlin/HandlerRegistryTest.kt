@@ -19,21 +19,21 @@ class PacketHandlerRegistryTest {
         var postOutgoingHandled = false
 
         registry.registerIncoming(object : IncomingPacketHandler<DummyIncomingPacket> {
-            override fun handle(session: Session, packet: DummyIncomingPacket): DummyIncomingPacket {
+            override fun process(session: Session, packet: DummyIncomingPacket): DummyIncomingPacket {
                 incomingHandled = true
                 return packet
             }
         })
 
         registry.registerOutgoing(object : OutgoingPacketHandler<DummyOutgoingPacket> {
-            override fun handle(session: Session, packet: DummyOutgoingPacket): DummyOutgoingPacket {
+            override fun process(session: Session, packet: DummyOutgoingPacket): DummyOutgoingPacket {
                 outgoingHandled = true
                 return packet
             }
         })
 
         registry.registerPostOutgoing(object : PostOutgoingPacketHandler<DummyPostOutgoingPacket> {
-            override fun handle(session: Session, packet: DummyPostOutgoingPacket): DummyPostOutgoingPacket {
+            override fun process(session: Session, packet: DummyPostOutgoingPacket): DummyPostOutgoingPacket {
                 postOutgoingHandled = true
                 return packet
             }
@@ -42,21 +42,21 @@ class PacketHandlerRegistryTest {
         val incomingHandler = registry.getIncoming(DummyIncomingPacket::class)
         assertNotNull(incomingHandler)
         val incomingPacket = DummyIncomingPacket()
-        val resultIncoming = incomingHandler.handle(NullSession(), incomingPacket)
+        val resultIncoming = incomingHandler.process(NullSession(), incomingPacket)
         assertSame(incomingPacket, resultIncoming)
         assertTrue(incomingHandled)
 
         val outgoingHandler = registry.getOutgoing(DummyOutgoingPacket::class)
         assertNotNull(outgoingHandler)
         val outgoingPacket = DummyOutgoingPacket()
-        val resultOutgoing = outgoingHandler.handle(NullSession(), outgoingPacket)
+        val resultOutgoing = outgoingHandler.process(NullSession(), outgoingPacket)
         assertSame(outgoingPacket, resultOutgoing)
         assertTrue(outgoingHandled)
 
         val postHandler = registry.getPostOutgoing(DummyPostOutgoingPacket::class)
         assertNotNull(postHandler)
         val postPacket = DummyPostOutgoingPacket()
-        val resultPost = postHandler.handle(NullSession(), postPacket)
+        val resultPost = postHandler.process(NullSession(), postPacket)
         assertSame(postPacket, resultPost)
         assertTrue(postOutgoingHandled)
     }
