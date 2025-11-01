@@ -1,6 +1,7 @@
 package org.kvxd.blockgameproxy.core.handler
 
 import org.kvxd.blockgameproxy.core.client.handlers.incoming.*
+import org.kvxd.blockgameproxy.core.client.handlers.incoming.CEntityHandlers.registerEntityHandlers
 import org.kvxd.blockgameproxy.core.server.handlers.incoming.*
 import org.slf4j.LoggerFactory
 
@@ -23,6 +24,7 @@ object PacketHandlerRegistries {
         registerIncoming(CBlockUpdateHandler())
         registerIncoming(CChunkHandler())
         registerIncoming(CCLoginHandler())
+        registerEntityHandlers()
         registerIncoming(CFinishConfigurationHandler())
         registerIncoming(CKeepAliveHandler())
         registerIncoming(CLightHandler())

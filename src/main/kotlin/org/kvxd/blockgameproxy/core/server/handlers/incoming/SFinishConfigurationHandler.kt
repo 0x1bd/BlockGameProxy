@@ -9,7 +9,6 @@ import org.geysermc.mcprotocollib.protocol.packet.ingame.clientbound.entity.play
 import org.geysermc.mcprotocollib.protocol.packet.ingame.clientbound.level.ClientboundChunkBatchFinishedPacket
 import org.geysermc.mcprotocollib.protocol.packet.ingame.clientbound.level.ClientboundChunkBatchStartPacket
 import org.geysermc.mcprotocollib.protocol.packet.ingame.clientbound.level.ClientboundGameEventPacket
-import org.kvxd.blockgameproxy.core.cache.Cache
 import org.kvxd.blockgameproxy.core.cache.CacheSet
 import org.kvxd.blockgameproxy.core.handler.IncomingPacketHandler
 import org.kvxd.blockgameproxy.core.switchState
@@ -62,6 +61,12 @@ class SFinishConfigurationHandler : IncomingPacketHandler<ServerboundFinishConfi
         session.send(ClientboundGameEventPacket(
             GameEvent.LEVEL_CHUNKS_LOAD_START, null
         ))
+
+        with(CacheSet.Entity) {
+            val packets = buildSpawnSyncPackets()
+
+            packets.forEach(session::send)
+        }
 
         return packet
     }
