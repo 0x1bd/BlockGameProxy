@@ -8,10 +8,21 @@ import org.kvxd.blockgameproxy.core.server.ProxyServer
 class SLoginFinishedHandler : OutgoingPacketHandler<ClientboundLoginFinishedPacket> {
 
     override fun process(
-        session: Session,
-        packet: ClientboundLoginFinishedPacket
+        session: Session, packet: ClientboundLoginFinishedPacket
     ): ClientboundLoginFinishedPacket {
-        ProxyServer.currentSession = session
+        synchronized(ProxyServer) {
+            if (ProxyServer.currentSession == null) {
+                ProxyServer.currentSession = session
+                ProxyServer.LOGGER.info("Session ${session.remoteAddress} accepted as currentSession — enabling live forwarding")
+            } else {
+                ProxyServer.LOGGER.warn("Login finished for session ${session.remoteAddress} but someone is already connected; disconnecting")
+                try {
+                    session.disconnect("Proxy already in use")
+                } catch (t: Throwable) {
+                    ProxyServer.LOGGER.warn("Failed to disconnect extra session", t)
+                }
+            }
+        }
 
         return packet
     }

@@ -9,7 +9,6 @@ import org.kvxd.blockgameproxy.core.server.tick.TickSystem
 import org.kvxd.blockgameproxy.core.server.tick.tasks.KeepAliveTask
 import org.slf4j.LoggerFactory
 import java.net.InetSocketAddress
-import java.util.concurrent.atomic.AtomicReference
 
 object ProxyServer {
 
@@ -19,14 +18,10 @@ object ProxyServer {
         get() = protocol.codec
 
     private val networkServer: NetworkServer by lazy {
-        NetworkServer(InetSocketAddress(config.bindPort)) { protocol }
+        NetworkServer(InetSocketAddress(config.bindPort)) { createMinecraftProtocol() }
     }
 
-    private val currentSessionRef = AtomicReference<Session?>(null)
-
-    var currentSession: Session?
-        get() = currentSessionRef.get()
-        set(value) = currentSessionRef.set(value)
+    var currentSession: Session? = null
 
     val LOGGER = LoggerFactory.getLogger(ProxyServer::class.java)
 

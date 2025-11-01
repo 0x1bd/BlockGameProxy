@@ -23,7 +23,7 @@ class ServerSessionListener : SessionAdapter() {
 
         val processedPacket = handler?.process(session, packet) ?: packet
 
-        if (shouldForward && session.getState() == ProtocolState.GAME) {
+        if (shouldForward && session.getState() == ProtocolState.GAME && session == ProxyServer.currentSession) {
             ProxyClient.send(processedPacket)
         }
     }
@@ -51,11 +51,6 @@ class ServerSessionListener : SessionAdapter() {
     }
 
     override fun disconnected(event: DisconnectedEvent) {
-        println("Disconnected session is ${event.session.remoteAddress}")
-        println("Current session is ${ProxyServer.currentSession?.remoteAddress}")
-
-        println("Comparison: ${event.session == ProxyServer.currentSession}")
-
         if (event.session == ProxyServer.currentSession) {
             ProxyServer.currentSession = null
         }
