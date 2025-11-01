@@ -2,8 +2,7 @@ package org.kvxd.blockgameproxy.core.client.handlers.incoming
 
 import org.geysermc.mcprotocollib.network.Session
 import org.geysermc.mcprotocollib.protocol.packet.ingame.clientbound.level.ClientboundLevelChunkWithLightPacket
-import org.kvxd.blockgameproxy.core.cache.Cache
-import org.kvxd.blockgameproxy.core.cache.CacheSet
+import org.kvxd.blockgameproxy.core.cache.caches.chunk.ChunkCache
 import org.kvxd.blockgameproxy.core.handler.IncomingPacketHandler
 
 class CChunkHandler : IncomingPacketHandler<ClientboundLevelChunkWithLightPacket> {
@@ -12,7 +11,7 @@ class CChunkHandler : IncomingPacketHandler<ClientboundLevelChunkWithLightPacket
         session: Session,
         packet: ClientboundLevelChunkWithLightPacket
     ): ClientboundLevelChunkWithLightPacket {
-        CacheSet.Chunk.handleChunkPacket(packet)
+        ChunkCache.handleChunkPacket(packet)
 
         return packet
     }

@@ -7,7 +7,7 @@ import org.geysermc.mcprotocollib.protocol.packet.ingame.clientbound.entity.Clie
 import org.geysermc.mcprotocollib.protocol.packet.ingame.clientbound.entity.ClientboundMoveEntityRotPacket
 import org.geysermc.mcprotocollib.protocol.packet.ingame.clientbound.entity.ClientboundTeleportEntityPacket
 import org.geysermc.mcprotocollib.protocol.packet.ingame.clientbound.entity.spawn.ClientboundAddEntityPacket
-import org.kvxd.blockgameproxy.core.cache.CacheSet
+import org.kvxd.blockgameproxy.core.cache.caches.entity.EntityCache
 import org.kvxd.blockgameproxy.core.handler.IncomingPacketHandler
 import org.kvxd.blockgameproxy.core.handler.PacketHandlerRegistry
 
@@ -30,32 +30,32 @@ class CAddEntityHandler : IncomingPacketHandler<ClientboundAddEntityPacket> {
         session: Session,
         packet: ClientboundAddEntityPacket
     ): ClientboundAddEntityPacket {
-        CacheSet.Entity.handleSpawnPacket(packet)
+        EntityCache.handleSpawnPacket(packet)
 
         return packet
     }
 }
 
-class CSyncEntityPositionHandler: IncomingPacketHandler<ClientboundEntityPositionSyncPacket> {
+class CSyncEntityPositionHandler : IncomingPacketHandler<ClientboundEntityPositionSyncPacket> {
 
     override fun process(
         session: Session,
         packet: ClientboundEntityPositionSyncPacket
     ): ClientboundEntityPositionSyncPacket {
-        CacheSet.Entity.handleSyncPacket(packet)
+        EntityCache.handleSyncPacket(packet)
 
         return packet
     }
 
 }
 
-class CTeleportEntityHandler: IncomingPacketHandler<ClientboundTeleportEntityPacket> {
+class CTeleportEntityHandler : IncomingPacketHandler<ClientboundTeleportEntityPacket> {
 
     override fun process(
         session: Session,
         packet: ClientboundTeleportEntityPacket
     ): ClientboundTeleportEntityPacket {
-        CacheSet.Entity.handleTeleportPacket(packet)
+        EntityCache.handleTeleportPacket(packet)
 
         return packet
     }
@@ -65,7 +65,7 @@ class CTeleportEntityHandler: IncomingPacketHandler<ClientboundTeleportEntityPac
 class CMovePosHandler : IncomingPacketHandler<ClientboundMoveEntityPosPacket> {
 
     override fun process(session: Session, packet: ClientboundMoveEntityPosPacket): ClientboundMoveEntityPosPacket {
-        CacheSet.Entity.handleMovePos(packet)
+        EntityCache.handleMovePos(packet)
 
         return packet
     }
@@ -75,7 +75,7 @@ class CMovePosHandler : IncomingPacketHandler<ClientboundMoveEntityPosPacket> {
 class CMoveRotHandler : IncomingPacketHandler<ClientboundMoveEntityRotPacket> {
 
     override fun process(session: Session, packet: ClientboundMoveEntityRotPacket): ClientboundMoveEntityRotPacket {
-        CacheSet.Entity.handleMoveRot(packet)
+        EntityCache.handleMoveRot(packet)
 
         return packet
     }
@@ -84,8 +84,11 @@ class CMoveRotHandler : IncomingPacketHandler<ClientboundMoveEntityRotPacket> {
 
 class CMovePosRotHandler : IncomingPacketHandler<ClientboundMoveEntityPosRotPacket> {
 
-    override fun process(session: Session, packet: ClientboundMoveEntityPosRotPacket): ClientboundMoveEntityPosRotPacket {
-        CacheSet.Entity.handleMovePosRot(packet)
+    override fun process(
+        session: Session,
+        packet: ClientboundMoveEntityPosRotPacket
+    ): ClientboundMoveEntityPosRotPacket {
+        EntityCache.handleMovePosRot(packet)
 
         return packet
     }

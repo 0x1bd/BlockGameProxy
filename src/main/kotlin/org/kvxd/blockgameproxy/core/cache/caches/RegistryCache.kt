@@ -9,14 +9,18 @@ import org.kvxd.blockgameproxy.core.cache.ResetCondition
 
 object RegistryCache : Cache() {
 
-    var tagsPacket by resettable<ClientboundUpdateTagsPacket?>(null)
+    var tagsPacket: ClientboundUpdateTagsPacket? = null
 
     // Should be default though it can be changed
-    var knownPacks by resettableWithDefault(
-        listOf(KnownPack("minecraft", "core", "1.21.4"))
-    )
+    var knownPacks = listOf(KnownPack("minecraft", "core", "1.21.4"))
 
-    var registryData by resettableWithDefault(mutableListOf<RegistryData>())
+    var registryData = mutableListOf<RegistryData>()
+
+    override fun reset() {
+        tagsPacket = null
+        knownPacks = listOf(KnownPack("minecraft", "core", "1.21.4"))
+        registryData.clear()
+    }
 
     override val resetCondition: ResetCondition = ResetCondition.Disconnect
 

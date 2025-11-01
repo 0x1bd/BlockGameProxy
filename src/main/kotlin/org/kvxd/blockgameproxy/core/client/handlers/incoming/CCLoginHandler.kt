@@ -1,10 +1,10 @@
 package org.kvxd.blockgameproxy.core.client.handlers.incoming
 
-import org.kvxd.blockgameproxy.core.handler.IncomingPacketHandler
 import org.geysermc.mcprotocollib.network.Session
 import org.geysermc.mcprotocollib.protocol.packet.ingame.clientbound.ClientboundLoginPacket
-import org.kvxd.blockgameproxy.core.cache.Cache
-import org.kvxd.blockgameproxy.core.cache.CacheSet
+import org.kvxd.blockgameproxy.core.cache.caches.LoginCache
+import org.kvxd.blockgameproxy.core.cache.caches.chunk.ChunkCache
+import org.kvxd.blockgameproxy.core.handler.IncomingPacketHandler
 
 class CCLoginHandler : IncomingPacketHandler<ClientboundLoginPacket> {
 
@@ -12,10 +12,10 @@ class CCLoginHandler : IncomingPacketHandler<ClientboundLoginPacket> {
         session: Session,
         packet: ClientboundLoginPacket
     ): ClientboundLoginPacket {
-        CacheSet.Login.entityId = packet.entityId
-        CacheSet.Login.spawnInfo = packet.commonPlayerSpawnInfo
+        LoginCache.entityId = packet.entityId
+        LoginCache.spawnInfo = packet.commonPlayerSpawnInfo
 
-        CacheSet.Chunk.worldNames = packet.worldNames
+        ChunkCache.worldNames = packet.worldNames
         return packet
     }
 

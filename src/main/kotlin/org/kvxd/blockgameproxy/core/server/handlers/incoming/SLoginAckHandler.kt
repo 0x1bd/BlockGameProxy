@@ -6,8 +6,7 @@ import org.geysermc.mcprotocollib.protocol.packet.configuration.clientbound.Clie
 import org.geysermc.mcprotocollib.protocol.packet.configuration.clientbound.ClientboundRegistryDataPacket
 import org.geysermc.mcprotocollib.protocol.packet.configuration.clientbound.ClientboundSelectKnownPacks
 import org.geysermc.mcprotocollib.protocol.packet.login.serverbound.ServerboundLoginAcknowledgedPacket
-import org.kvxd.blockgameproxy.core.cache.Cache
-import org.kvxd.blockgameproxy.core.cache.CacheSet
+import org.kvxd.blockgameproxy.core.cache.caches.RegistryCache
 import org.kvxd.blockgameproxy.core.handler.IncomingPacketHandler
 import org.kvxd.blockgameproxy.core.switchState
 
@@ -19,19 +18,18 @@ class SLoginAckHandler : IncomingPacketHandler<ServerboundLoginAcknowledgedPacke
     ): ServerboundLoginAcknowledgedPacket {
         session.switchState(ProtocolState.CONFIGURATION)
 
-        session.send(ClientboundSelectKnownPacks(CacheSet.Registry.knownPacks))
+        session.send(ClientboundSelectKnownPacks(RegistryCache.knownPacks))
 
-        CacheSet.Registry.registryData.forEach { data ->
+        RegistryCache.registryData.forEach { data ->
             session.send(ClientboundRegistryDataPacket(data.key, data.entries))
         }
 
-        session.send(CacheSet.Registry.tagsPacket!!)
+        session.send(RegistryCache.tagsPacket!!)
 
         session.send(ClientboundFinishConfigurationPacket())
 
         return packet
     }
-
 
     override val shouldForward: Boolean = false
 

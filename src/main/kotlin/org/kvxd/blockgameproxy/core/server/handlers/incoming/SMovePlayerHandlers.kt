@@ -4,13 +4,13 @@ import org.cloudburstmc.math.vector.Vector3d
 import org.geysermc.mcprotocollib.network.Session
 import org.geysermc.mcprotocollib.protocol.packet.ingame.serverbound.player.ServerboundMovePlayerPosPacket
 import org.geysermc.mcprotocollib.protocol.packet.ingame.serverbound.player.ServerboundMovePlayerPosRotPacket
-import org.kvxd.blockgameproxy.core.cache.CacheSet
+import org.kvxd.blockgameproxy.core.cache.caches.PlayerCache
 import org.kvxd.blockgameproxy.core.handler.IncomingPacketHandler
 
-class SMovePlayerPosHandler: IncomingPacketHandler<ServerboundMovePlayerPosPacket> {
+class SMovePlayerPosHandler : IncomingPacketHandler<ServerboundMovePlayerPosPacket> {
 
     override fun process(session: Session, packet: ServerboundMovePlayerPosPacket): ServerboundMovePlayerPosPacket {
-        CacheSet.Player.position =
+        PlayerCache.position =
             Vector3d.from(packet.x, packet.y, packet.z)
 
         return packet
@@ -18,11 +18,17 @@ class SMovePlayerPosHandler: IncomingPacketHandler<ServerboundMovePlayerPosPacke
 
 }
 
-class SMovePlayerPosRotHandler: IncomingPacketHandler<ServerboundMovePlayerPosRotPacket> {
+class SMovePlayerPosRotHandler : IncomingPacketHandler<ServerboundMovePlayerPosRotPacket> {
 
-    override fun process(session: Session, packet: ServerboundMovePlayerPosRotPacket): ServerboundMovePlayerPosRotPacket {
-        CacheSet.Player.position =
+    override fun process(
+        session: Session,
+        packet: ServerboundMovePlayerPosRotPacket
+    ): ServerboundMovePlayerPosRotPacket {
+        PlayerCache.position =
             Vector3d.from(packet.x, packet.y, packet.z)
+
+        PlayerCache.yaw = packet.yaw
+        PlayerCache.pitch = packet.pitch
 
         return packet
     }

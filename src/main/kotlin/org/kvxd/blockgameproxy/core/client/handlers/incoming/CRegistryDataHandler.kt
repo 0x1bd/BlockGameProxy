@@ -1,10 +1,10 @@
 package org.kvxd.blockgameproxy.core.client.handlers.incoming
 
-import org.kvxd.blockgameproxy.core.handler.IncomingPacketHandler
 import org.geysermc.mcprotocollib.network.Session
 import org.geysermc.mcprotocollib.protocol.packet.configuration.clientbound.ClientboundRegistryDataPacket
-import org.kvxd.blockgameproxy.core.cache.CacheSet
+import org.kvxd.blockgameproxy.core.cache.caches.RegistryCache
 import org.kvxd.blockgameproxy.core.cache.caches.RegistryData
+import org.kvxd.blockgameproxy.core.handler.IncomingPacketHandler
 
 class CRegistryDataHandler : IncomingPacketHandler<ClientboundRegistryDataPacket> {
 
@@ -12,7 +12,7 @@ class CRegistryDataHandler : IncomingPacketHandler<ClientboundRegistryDataPacket
         session: Session,
         packet: ClientboundRegistryDataPacket
     ): ClientboundRegistryDataPacket {
-        CacheSet.Registry.registryData += RegistryData(
+        RegistryCache.registryData += RegistryData(
             packet.registry,
             packet.entries
         )

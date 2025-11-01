@@ -5,12 +5,12 @@ import org.geysermc.mcprotocollib.protocol.data.game.PlayerListEntry
 import org.geysermc.mcprotocollib.protocol.data.game.PlayerListEntryAction
 import org.geysermc.mcprotocollib.protocol.packet.ingame.clientbound.ClientboundPlayerInfoRemovePacket
 import org.geysermc.mcprotocollib.protocol.packet.ingame.clientbound.ClientboundPlayerInfoUpdatePacket
-import org.kvxd.blockgameproxy.core.cache.Cache
+import org.kvxd.blockgameproxy.core.cache.SyncableCache
 import java.util.*
 
-object TabListCache : Cache() {
+object TabListCache : SyncableCache() {
 
-    val entriesById by resettableWithDefault(mutableMapOf<UUID, PlayerListEntry>())
+    private val entriesById = mutableMapOf<UUID, PlayerListEntry>()
 
     val entries: Collection<PlayerListEntry>
         get() = entriesById.values
@@ -66,7 +66,7 @@ object TabListCache : Cache() {
         }
     }
 
-    fun sync(session: Session) {
+    override fun sync(session: Session) {
         if (entriesById.isEmpty()) return
 
         val packet = ClientboundPlayerInfoUpdatePacket(
@@ -84,6 +84,10 @@ object TabListCache : Cache() {
         )
 
         session.send(packet)
+    }
+
+    override fun reset() {
+        entriesById.clear()
     }
 
 }

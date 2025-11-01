@@ -3,7 +3,7 @@ package org.kvxd.blockgameproxy.core.client.handlers.incoming
 import org.geysermc.mcprotocollib.network.Session
 import org.geysermc.mcprotocollib.protocol.packet.ingame.clientbound.ClientboundPlayerInfoRemovePacket
 import org.geysermc.mcprotocollib.protocol.packet.ingame.clientbound.ClientboundPlayerInfoUpdatePacket
-import org.kvxd.blockgameproxy.core.cache.CacheSet
+import org.kvxd.blockgameproxy.core.cache.caches.TabListCache
 import org.kvxd.blockgameproxy.core.handler.IncomingPacketHandler
 import org.kvxd.blockgameproxy.core.handler.PacketHandlerRegistry
 
@@ -22,7 +22,7 @@ class CPlayerInfoUpdateHandler : IncomingPacketHandler<ClientboundPlayerInfoUpda
         session: Session,
         packet: ClientboundPlayerInfoUpdatePacket
     ): ClientboundPlayerInfoUpdatePacket {
-        CacheSet.TabList.handleUpdatePacket(packet)
+        TabListCache.handleUpdatePacket(packet)
 
         return packet
     }
@@ -35,7 +35,7 @@ class CPlayerInfoRemoveHandler : IncomingPacketHandler<ClientboundPlayerInfoRemo
         session: Session,
         packet: ClientboundPlayerInfoRemovePacket
     ): ClientboundPlayerInfoRemovePacket {
-        CacheSet.TabList.handleRemovePacket(packet)
+        TabListCache.handleRemovePacket(packet)
 
         return packet
     }

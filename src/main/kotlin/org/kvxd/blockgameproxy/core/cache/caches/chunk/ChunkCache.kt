@@ -2,22 +2,25 @@ package org.kvxd.blockgameproxy.core.cache.caches.chunk
 
 import io.netty.buffer.Unpooled
 import net.kyori.adventure.key.Key
+import org.geysermc.mcprotocollib.network.Session
 import org.geysermc.mcprotocollib.protocol.codec.MinecraftTypes
 import org.geysermc.mcprotocollib.protocol.data.game.chunk.ChunkSection
 import org.geysermc.mcprotocollib.protocol.data.game.level.LightUpdateData
 import org.geysermc.mcprotocollib.protocol.packet.ingame.clientbound.level.ClientboundBlockUpdatePacket
+import org.geysermc.mcprotocollib.protocol.packet.ingame.clientbound.level.ClientboundChunkBatchFinishedPacket
+import org.geysermc.mcprotocollib.protocol.packet.ingame.clientbound.level.ClientboundChunkBatchStartPacket
 import org.geysermc.mcprotocollib.protocol.packet.ingame.clientbound.level.ClientboundLevelChunkWithLightPacket
 import org.geysermc.mcprotocollib.protocol.packet.ingame.clientbound.level.ClientboundLightUpdatePacket
 import org.geysermc.mcprotocollib.protocol.packet.ingame.clientbound.level.ClientboundSectionBlocksUpdatePacket
-import org.kvxd.blockgameproxy.core.cache.Cache
+import org.kvxd.blockgameproxy.core.cache.SyncableCache
 import java.util.concurrent.ConcurrentHashMap
 
-object ChunkCache : Cache() {
+object ChunkCache : SyncableCache() {
 
     // key = chunkPos
-    private val chunks by resettableWithDefault(ConcurrentHashMap<Long, Chunk>())
+    private val chunks = ConcurrentHashMap<Long, Chunk>()
 
-    var worldNames by resettableWithDefault(arrayOf(Key.key("overworld"), Key.key("the_nether"), Key.key("the_end")))
+    var worldNames = arrayOf(Key.key("overworld"), Key.key("the_nether"), Key.key("the_end"))
 
     fun handleChunkPacket(packet: ClientboundLevelChunkWithLightPacket) {
         val chunkPos = Chunk.toLong(packet.x, packet.z)
@@ -106,6 +109,20 @@ object ChunkCache : Cache() {
                     ?: throw IllegalStateException("Light data is null for chunk ${chunk.x}, ${chunk.z}")
             )
         }
+    }
+
+    override fun sync(session: Session) {
+        session.send(ClientboundChunkBatchStartPacket())
+
+        val packets = buildChunkSyncPackets()
+
+        packets.forEach(session::send)
+
+        session.send(ClientboundChunkBatchFinishedPacket(packets.size))
+    }
+
+    override fun reset() {
+        chunks.clear()
     }
 
     private fun decodeSections(chunkData: ByteArray): List<ChunkSection> {

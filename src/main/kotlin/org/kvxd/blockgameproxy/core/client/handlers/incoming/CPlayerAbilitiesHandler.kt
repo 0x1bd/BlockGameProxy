@@ -1,10 +1,9 @@
 package org.kvxd.blockgameproxy.core.client.handlers.incoming
 
-import org.kvxd.blockgameproxy.core.handler.IncomingPacketHandler
 import org.geysermc.mcprotocollib.network.Session
 import org.geysermc.mcprotocollib.protocol.packet.ingame.clientbound.entity.player.ClientboundPlayerAbilitiesPacket
-import org.kvxd.blockgameproxy.core.cache.Cache
-import org.kvxd.blockgameproxy.core.cache.CacheSet
+import org.kvxd.blockgameproxy.core.cache.caches.PlayerCache
+import org.kvxd.blockgameproxy.core.handler.IncomingPacketHandler
 
 class CPlayerAbilitiesHandler : IncomingPacketHandler<ClientboundPlayerAbilitiesPacket> {
 
@@ -12,7 +11,7 @@ class CPlayerAbilitiesHandler : IncomingPacketHandler<ClientboundPlayerAbilities
         session: Session,
         packet: ClientboundPlayerAbilitiesPacket
     ): ClientboundPlayerAbilitiesPacket {
-        with(CacheSet.Player) {
+        with(PlayerCache) {
             isInvincible = packet.isInvincible
             canFly = packet.isCanFly
             flying = packet.isFlying

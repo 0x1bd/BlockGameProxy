@@ -7,20 +7,24 @@ import org.kvxd.blockgameproxy.core.cache.Cache
 
 object LoginCache : Cache() {
 
-    var entityId by resettable(0)
-    var spawnInfo by resettable(
-        PlayerSpawnInfo(
-            0,
-            Key.key("overworld"),
-            4474032083008373353,
-            GameMode.SURVIVAL,
-            null,
-            false,
-            false,
-            null,
-            0,
-            -63
-        )
+    private val defaultSpawnInfo = PlayerSpawnInfo(
+        0,
+        Key.key("overworld"),
+        4474032083008373353,
+        GameMode.SURVIVAL,
+        null,
+        false,
+        false,
+        null,
+        0,
+        -63
     )
+
+    var entityId = 0
+    var spawnInfo = defaultSpawnInfo
+
+    override fun reset() {
+        spawnInfo = defaultSpawnInfo
+    }
 
 }

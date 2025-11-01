@@ -1,11 +1,10 @@
 package org.kvxd.blockgameproxy.core.client.handlers.incoming
 
-import org.kvxd.blockgameproxy.core.handler.IncomingPacketHandler
 import org.geysermc.mcprotocollib.network.Session
 import org.geysermc.mcprotocollib.protocol.packet.configuration.clientbound.ClientboundSelectKnownPacks
 import org.geysermc.mcprotocollib.protocol.packet.configuration.serverbound.ServerboundSelectKnownPacks
-import org.kvxd.blockgameproxy.core.cache.Cache
-import org.kvxd.blockgameproxy.core.cache.CacheSet
+import org.kvxd.blockgameproxy.core.cache.caches.RegistryCache
+import org.kvxd.blockgameproxy.core.handler.IncomingPacketHandler
 
 class CSelectKnownPacks : IncomingPacketHandler<ClientboundSelectKnownPacks> {
 
@@ -13,7 +12,7 @@ class CSelectKnownPacks : IncomingPacketHandler<ClientboundSelectKnownPacks> {
         session: Session,
         packet: ClientboundSelectKnownPacks
     ): ClientboundSelectKnownPacks {
-        CacheSet.Registry.knownPacks = packet.knownPacks
+        RegistryCache.knownPacks = packet.knownPacks
 
         session.send(ServerboundSelectKnownPacks(packet.knownPacks))
 

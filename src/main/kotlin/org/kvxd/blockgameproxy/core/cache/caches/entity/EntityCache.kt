@@ -1,18 +1,19 @@
 package org.kvxd.blockgameproxy.core.cache.caches.entity
 
 import org.cloudburstmc.math.vector.Vector3d
+import org.geysermc.mcprotocollib.network.Session
 import org.geysermc.mcprotocollib.protocol.packet.ingame.clientbound.entity.ClientboundEntityPositionSyncPacket
 import org.geysermc.mcprotocollib.protocol.packet.ingame.clientbound.entity.ClientboundMoveEntityPosPacket
 import org.geysermc.mcprotocollib.protocol.packet.ingame.clientbound.entity.ClientboundMoveEntityPosRotPacket
 import org.geysermc.mcprotocollib.protocol.packet.ingame.clientbound.entity.ClientboundMoveEntityRotPacket
 import org.geysermc.mcprotocollib.protocol.packet.ingame.clientbound.entity.ClientboundTeleportEntityPacket
 import org.geysermc.mcprotocollib.protocol.packet.ingame.clientbound.entity.spawn.ClientboundAddEntityPacket
-import org.kvxd.blockgameproxy.core.cache.Cache
+import org.kvxd.blockgameproxy.core.cache.SyncableCache
 
-object EntityCache : Cache() {
+object EntityCache : SyncableCache() {
 
     // id = entity
-    val entities by resettableWithDefault(mutableMapOf<Int, Entity>())
+    val entities = mutableMapOf<Int, Entity>()
 
     fun handleSpawnPacket(packet: ClientboundAddEntityPacket) {
         entities[packet.entityId] = Entity(
@@ -111,6 +112,14 @@ object EntityCache : Cache() {
                 entity.velocity.z,
             )
         }
+    }
+
+    override fun sync(session: Session) {
+        buildSpawnSyncPackets().forEach(session::send)
+    }
+
+    override fun reset() {
+        entities.clear()
     }
 
 }
